@@ -98,7 +98,7 @@ SMODS.Edition {
     name = 'Boric',
     text = {
         [1] = "Gives {C:attention}+1{} selecion limit to both",
-        [2] = "{C:blue}play{} in {C:red}discard{}"
+        [2] = "{C:blue}play{} and {C:red}discard{}"
     }
 },
     -- Custom draw path: avoid default _send payload for this shader.
