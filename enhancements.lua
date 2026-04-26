@@ -1,5 +1,30 @@
 -- Enhancements
 
+SMODS.Enhancement {
+    key = "miniscule",
+    weight = 0,
+
+    loc_txt = {
+        name = "Miniscule",
+        text = {
+            "{C:inactive}This card is smaller",
+            "for no reason{}"
+        }
+    },
+
+    any_suit = false,
+    replace_base_card = false,
+    no_rank = false,
+    no_suit = false,
+    always_scores = false,
+    unlocked = true,
+    discovered = true,
+    no_collection = true,
+    in_pool = function(self, args)
+        return false
+    end
+}
+
 SMODS.Enhancement{
     key = "wartorn",
     atlas = "CustomEnhancements",
