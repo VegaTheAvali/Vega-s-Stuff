@@ -95,14 +95,15 @@ end
 
 function Vegasstuff.can_spawn_geomancy_card(center, opts)
     if not (G and G.GAME and center and center.key) then
-        return true
+        return true, { allow_duplicates = true }
     end
 
     if opts and opts.solar_disabled and G.GAME.modifiers and G.GAME.modifiers.vegasstuff_solar_deck then
-        return false
+        return false, { allow_duplicates = true }
     end
 
-    return Vegasstuff.get_geomancy_level(center.key) < Vegasstuff.get_geomancy_max_level(center)
+    return Vegasstuff.get_geomancy_level(center.key) < Vegasstuff.get_geomancy_max_level(center),
+        { allow_duplicates = true }
 end
 
 function Vegasstuff.geomancy_can_use(center)
