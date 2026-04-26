@@ -4,6 +4,7 @@ SMODS.Rarity {
         ["Joker"] = true
     },
     default_weight = 0.1,
+    display_if_empty = true,
     badge_colour = HEX('216563'),
     loc_txt = {
         name = "Exotic"
@@ -19,6 +20,7 @@ SMODS.Rarity {
         ["Joker"] = true
     },
     default_weight = 0.1,
+    display_if_empty = true,
     badge_colour = HEX('6A7A8B'),
     loc_txt = {
         name = "Transcendent"
