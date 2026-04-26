@@ -1,16 +1,17 @@
+local ALLOWED_SOURCES = {
+    rif = true,
+    rta = true,
+    sou = true,
+    uta = true,
+    wra = true
+}
 
-SMODS.Joker{ --The Seized
+SMODS.Joker {
     key = "theseized",
-    config = {
-        extra = {
-            Spec_count = 0,
-            Spec_final = 5
-        }
-    },
     loc_txt = {
         ['name'] = 'The Seized',
         ['text'] = {
-            [1] = '{s:3}placeholder{}'
+            [1] = '{C:inactive}No effect yet{}'
         },
         ['unlock'] = {
             [1] = 'Unlocked by default.'
@@ -21,7 +22,7 @@ SMODS.Joker{ --The Seized
         y = 0
     },
     display_size = {
-        w = 71 * 1, 
+        w = 71 * 1,
         h = 95 * 1
     },
     cost = 250,
@@ -32,23 +33,13 @@ SMODS.Joker{ --The Seized
     unlocked = true,
     discovered = true,
     atlas = 'CustomJokers',
-    dependencies = {"Cryptid","Polterworx"},
+    dependencies = { "Cryptid", "Polterworx" },
     pools = { ["vegasstuff_mycustom_jokers"] = true },
     soul_pos = {
         x = 3,
         y = 0
     },
     in_pool = function(self, args)
-        return (
-            not args 
-            or args.source ~= 'sho' and args.source ~= 'buf' and args.source ~= 'jud' 
-            or args.source == 'rif' or args.source == 'rta' or args.source == 'sou' or args.source == 'uta' or args.source == 'wra'
-        )
-        and true
-    end,
-    
-    loc_vars = function(self, info_queue, card)
-        
-        return {vars = {card.ability.extra.Spec_count, card.ability.extra.Spec_final}}
+        return not args or (args.source ~= 'sho' and args.source ~= 'buf' and args.source ~= 'jud') or ALLOWED_SOURCES[args.source]
     end
 }

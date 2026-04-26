@@ -158,6 +158,19 @@ SMODS.Enhancement{
     weight = 5
 }
 
+local function duality_reduction_for_id(id)
+    if type(id) ~= "number" then
+        return 0
+    end
+    if id == 14 then
+        return 11 / 2
+    end
+    if id >= 10 then
+        return 10 / 2
+    end
+    return id / 2
+end
+
 SMODS.Enhancement {
     key = 'duality',
     pos = { x = 3, y = 0 },
@@ -184,45 +197,22 @@ SMODS.Enhancement {
     loc_vars = function(self, info_queue, card)
         if not card then return {vars = {0}} end
 
-        local id = card:get_id()
-        if type(id) ~= 'number' then
-            return {vars = {0}}
-        end
-        local chip_val = 0
-
-        if id == 14 then
-            chip_val = 11
-        elseif id >= 10 then
-            chip_val = 10
-        else
-            chip_val = id
-        end
-
-        return {vars = {chip_val / 2}}
+        local reduction = duality_reduction_for_id(card:get_id())
+        return {vars = {reduction}}
     end,
 
     calculate = function(self, card, context)
         if context.main_scoring and context.cardarea == G.play then
-            local id = card:get_id()
-            if type(id) ~= 'number' then
+            local reduction = duality_reduction_for_id(card:get_id())
+            if reduction <= 0 then
                 return
             end
-            local chip_val = 0
-
-            if id == 14 then
-                chip_val = 11
-            elseif id >= 10 then
-                chip_val = 10
-            else
-                chip_val = id
-            end
-
-            local reduction = chip_val / 2
 
             if G.GAME.blind and G.GAME.blind.chips then
-                local new_blind = G.GAME.blind.chips * (1 - reduction/100)
+                local blind_multiplier = to_big(1 - (reduction / 100))
+                local new_blind = to_big(G.GAME.blind.chips) * blind_multiplier
 
-                if new_blind < 1 then
+                if to_big(new_blind) < to_big(1) then
                     new_blind = 1
                 end
 

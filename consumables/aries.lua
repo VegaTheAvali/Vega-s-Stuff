@@ -5,7 +5,7 @@ SMODS.Consumable {
     pos = { x = 0, y = 0 },
     soul_pos = {x = 1, y = 0},
     loc_txt = {
-        name = 'Aries',
+        name = '{C:vegasstuff_name_aries}Aries{}',
         text = {
             [1] = 'Enhance {C:attention}1{} card with {C:enhanced}War Torn{}'
         }
@@ -47,7 +47,7 @@ SMODS.Consumable {
                     trigger = 'after',
                     delay = 0.1,
                     func = function()
-                        G.hand.highlighted[i]:set_ability(G.P_CENTERS['m_vegasstuff_wartorn'])            
+                        G.hand.highlighted[i]:set_ability(G.P_CENTERS['m_vegasstuff_wartorn'])
                         return true
                     end
                 }))
