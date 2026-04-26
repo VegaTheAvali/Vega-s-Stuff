@@ -60,8 +60,7 @@ SMODS.Consumable {
     loc_vars = function(self)
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        local next_level = math.min(level + 1, extra.max_level)
-        return { vars = { level >= extra.max_level and 0 or 1, next_level, next_level, extra.max_level } }
+        return { vars = { level >= extra.max_level and 0 or 1, level, level, extra.max_level } }
     end,
     can_use = function(self)
         return Vegasstuff.geomancy_can_use(self)
