@@ -59,6 +59,50 @@ local function keyed_pack_card(key, set, key_append)
     return card
 end
 
+local function solar_deck_active()
+    return G and G.GAME and G.GAME.modifiers and G.GAME.modifiers.vegasstuff_solar_deck
+end
+
+local function geomancy_tracker_key(center)
+    return center and center.key and center.key:gsub("^c_vegasstuff_", "")
+end
+
+local function is_maxed_geomancy_center(center)
+    local tracker_key = geomancy_tracker_key(center)
+    return center
+        and center.set == "geomancy"
+        and tracker_key ~= "croptid"
+        and Vegasstuff.get_geomancy_level(tracker_key) >= Vegasstuff.get_geomancy_max_level(center)
+end
+
+local function geomancy_pack_card(key_append)
+    local pool = G.P_CENTER_POOLS.geomancy or {}
+    local croptid_key = "c_vegasstuff_croptid"
+    local croptid_source = key_append .. "_maxed_geomancy_replacement"
+
+    if #pool == 0 then
+        return pack_card("geomancy", key_append)
+    end
+
+    for attempt = 1, math.max(#pool * 2, 1) do
+        local selected_index = pseudorandom("vegasstuff_geomancy_candidate_" .. key_append .. "_" .. attempt, 1, #pool)
+        local center = pool[selected_index]
+
+        if center and geomancy_tracker_key(center) ~= "croptid" then
+            if solar_deck_active() and is_maxed_geomancy_center(center) and G.P_CENTERS[croptid_key] then
+                return keyed_pack_card(croptid_key, "geomancy", croptid_source)
+            end
+
+            local in_pool = SMODS.add_to_pool(center, { source = key_append })
+            if in_pool then
+                return keyed_pack_card(center.key, "geomancy", key_append)
+            end
+        end
+    end
+
+    return pack_card("geomancy", key_append)
+end
+
 SMODS.Booster {
     key = "pack_of_creation",
     loc_txt = {
@@ -151,6 +195,9 @@ local function register_consumable_pack(args)
         discovered = true,
         loc_vars = pack_loc_vars,
         create_card = function()
+            if args.set == "geomancy" then
+                return geomancy_pack_card("vegasstuff_" .. args.key)
+            end
             return pack_card(args.set, "vegasstuff_" .. args.key)
         end,
         ease_background_colour = purple_pack_background,
