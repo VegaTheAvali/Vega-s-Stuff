@@ -70,7 +70,7 @@ SMODS.Consumable {
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
         local next_level = math.min(level + 1, extra.max_level)
         local next_gain = level >= extra.max_level and 0 or blind_payout_gain(self, next_level)
-        return { vars = { next_gain, next_level, blind_payout_total(next_level), extra.max_level } }
+        return { vars = { next_gain, level, blind_payout_total(level), extra.max_level } }
     end,
     can_use = function(self)
         return Vegasstuff.geomancy_can_use(self)
