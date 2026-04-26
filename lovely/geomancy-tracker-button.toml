@@ -1,0 +1,30 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 69
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+          {n=G.UIT.R, config={align = "cm", minh = 1.75, minw = 1.5,padding = 0.05, r = 0.1, hover = true, colour = G.C.ORANGE, button = "options", shadow = true}, nodes={'''
+position = "before"
+payload = '''
+          type(vegasstuff_geomancy_hud_button) == "function" and vegasstuff_geomancy_hud_button(0.45) or nil,
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+    return {n=G.UIT.ROOT, config = {align = "cm", padding = 0.03, colour = G.C.UI.TRANSPARENT_DARK}, nodes={'''
+position = "before"
+payload = '''
+    for _, button in ipairs(contents.buttons[1].nodes) do
+        if button.config and button.config.minh then
+            button.config.minh = 1.2
+        end
+    end
+'''
+match_indent = true

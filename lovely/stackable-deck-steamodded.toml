@@ -1,0 +1,247 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 69
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = '''
+	for k, v in ipairs(G.playing_cards) do
+		if v.base.suit* then table.insert(SUITS[v.base.suit], v) end'''
+position = "at"
+payload = '''
+if not _G.VegasDeckStack then
+  _G.VegasDeckStack = {}
+
+  function Card:vegasstuff_stack_key(args)
+    args = args or {}
+    local center = (self.config and self.config.center) or {}
+    local is_stone = self.ability and self.ability.effect == 'Stone Card'
+    local suit = self.base and (((is_stone or center.no_suit) and args.unique_count and 'NoSuit') or self.base.suit) or ''
+    local rank = self.base and (((is_stone or center.no_rank) and 'NoRank') or self.base.value) or ''
+    return string.format(
+      '%s%s%s%s%s%s%s%s%s',
+      suit,
+      rank,
+      self.ability and self.ability.name or '',
+      self.edition and (self.edition.type or next(self.edition)) or '',
+      self.seal or '',
+      self.eternal and 'Eternal' or '',
+      self.perishable and 'Perishable' or '',
+      self.rental and 'Rental' or '',
+      self.debuff and 'Debuff' or ''
+    )
+  end
+
+  function _G.VegasDeckStack.tablecopy(t)
+    local out = {}
+    for k, v in pairs(t) do out[k] = v end
+    return out
+  end
+
+  function _G.VegasDeckStack.get_visible_suits_smods(unplayed_only, page)
+    local suits = {}
+    for _, v in ipairs(G.playing_cards) do
+      if v.base.suit then
+        local greyed = unplayed_only and not ((v.area and v.area == G.deck) or v.ability.wheel_flipped)
+        if not greyed then suits[v.base.suit] = true end
+      end
+    end
+    local visible = {}
+    for i = #SMODS.Suit.obj_buffer, 1, -1 do
+      local s = SMODS.Suit.obj_buffer[i]
+      if suits[s] then visible[#visible + 1] = s end
+    end
+    local start_i = (page - 1) * 4 + 1
+    local end_i = math.min(start_i + 4 - 1, #visible)
+    local result = {}
+    for i = start_i, end_i do result[visible[i]] = true end
+    return result
+  end
+
+  function _G.VegasDeckStack.is_greyed_card(card, unplayed_only)
+    return unplayed_only and not ((card.area and card.area == G.deck) or card.ability.wheel_flipped)
+  end
+
+  function _G.VegasDeckStack.emplace_stacked_card(view_deck, card)
+    if not card then return end
+    card.T.x = view_deck.T.x + view_deck.T.w/2
+    card.T.y = view_deck.T.y
+    card:create_vegasstuff_quantity_display()
+    card:hard_set_T()
+    view_deck:emplace(card)
+  end
+
+  G.FUNCS = G.FUNCS or {}
+  G.FUNCS.vegasstuff_deck_view_quantity = function(e)
+    local preview_card = e.config.ref_table
+    e.states.visible = preview_card and (preview_card.stacked_quantity or 1) > 1
+  end
+
+  function Card:create_vegasstuff_quantity_display()
+    if self.children.vegasstuff_stack_display and (self.stacked_quantity or 1) <= 1 then
+      self.children.vegasstuff_stack_display:remove()
+      self.children.vegasstuff_stack_display = nil
+    end
+    if not self.children.vegasstuff_stack_display and (self.stacked_quantity or 1) > 1 then
+      self.children.vegasstuff_stack_display = UIBox {
+        definition = {
+          n = G.UIT.ROOT,
+          config = {
+            minh = 0.5,
+            maxh = 1.2,
+            minw = 0.43,
+            maxw = 2,
+            r = 0.001,
+            padding = 0.1,
+            align = 'cm',
+            colour = adjust_alpha(darken(G.C.BLACK, 0.2), 0.6),
+            shadow = false,
+            func = 'vegasstuff_deck_view_quantity',
+            ref_table = self
+          },
+          nodes = {
+            { n = G.UIT.T, config = { text = 'x', scale = 0.35, colour = G.C.RED }, padding = -1 },
+            {
+              n = G.UIT.T,
+              config = { ref_table = self, ref_value = 'stacked_quantity', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }
+            }
+          }
+        },
+        config = { align = 'tm', bond = 'Strong', parent = self },
+        states = { collide = { can = false }, drag = { can = true } }
+      }
+    end
+  end
+end
+local VegasDeckStack = _G.VegasDeckStack
+local unplayed_only_vs = (view_deck_unplayed_only or unplayed_only)
+local visible_suits_vs = VegasDeckStack.get_visible_suits_smods(unplayed_only_vs, args and args.cycle_config.current_option or 1)
+local SUITS_SORTED = VegasDeckStack.tablecopy(SUITS)
+for k, v in ipairs(G.playing_cards) do
+  if v.base.suit then
+  local greyed = VegasDeckStack.is_greyed_card(v, unplayed_only_vs)
+  local card_string = v:vegasstuff_stack_key {deck_view = true}
+  if greyed then
+    card_string = string.format('%sGreyed', card_string)
+  end
+
+  if greyed then
+  -- Ignore drawn cards for stack list in unplayed view.
+  elseif not SUITS[v.base.suit][card_string] then
+    table.insert(SUITS_SORTED[v.base.suit], card_string)
+
+    if visible_suits_vs[v.base.suit] then
+      local _scale = 0.7
+      local copy = copy_card(v, nil, _scale)
+      copy.greyed = greyed
+      copy.stacked_quantity = 1
+      SUITS[v.base.suit][card_string] = copy
+    else
+      SUITS[v.base.suit][card_string] = false
+    end
+  else
+    local stacked_card = SUITS[v.base.suit][card_string]
+    if type(stacked_card) == 'table' then
+      stacked_card.stacked_quantity = stacked_card.stacked_quantity + 1
+    end
+  end
+  end
+'''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = 'card_limit = #SUITS[suit_map[j]],'
+position = "at"
+payload = 'card_limit = #SUITS_SORTED[suit_map[j]],'
+
+[[patches]]
+[patches.regex]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = '''
+			for i = 1\, \#SUITS\[suit_map\[j\]\] do
+				if SUITS\[suit_map\[j\]\]\[i\] then
+					local greyed\, _scale = nil\, 0\.7
+					if unplayed_only and not \(\(SUITS\[suit_map\[j\]\]\[i\]\.area and SUITS\[suit_map\[j\]\]\[i\]\.area == G\.deck\) or SUITS\[suit_map\[j\]\]\[i\]\.ability\.wheel_flipped\) then
+						greyed = true
+					end
+					local copy = copy_card\(SUITS\[suit_map\[j\]\]\[i\]\, nil\, _scale[^\)\n]*\)
+					copy\.greyed = greyed
+					copy\.T\.x = view_deck\.T\.x \+ view_deck\.T\.w \/ 2
+					copy\.T\.y = view_deck\.T\.y
+
+					copy:hard_set_T\(\)
+					view_deck:emplace\(copy\)
+				end
+			end'''
+position = "at"
+payload = '''
+for i = 1, #SUITS_SORTED[suit_map[j]] do
+  local card_string = SUITS_SORTED[suit_map[j]][i]
+  local card = SUITS[suit_map[j]][card_string]
+  VegasDeckStack.emplace_stacked_card(view_deck, card)
+end
+'''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = 'card_limit = #SUITS[visible_suit[j]],'
+position = "at"
+payload = 'card_limit = #SUITS_SORTED[visible_suit[j]],'
+
+[[patches]]
+[patches.regex]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = '''
+				for i = 1\, \#SUITS\[visible_suit\[j\]\] do
+					if SUITS\[visible_suit\[j\]\]\[i\] then
+						local greyed\, _scale = nil\, 0\.7[\s\S]*
+						copy:hard_set_T\(\)
+						view_deck:emplace\(copy\)
+					end
+				end'''
+position = "at"
+payload = '''
+for i = 1, #SUITS_SORTED[visible_suit[j]] do
+  local card_string = SUITS_SORTED[visible_suit[j]][i]
+  local card = SUITS[visible_suit[j]][card_string]
+  VegasDeckStack.emplace_stacked_card(view_deck, card)
+end
+'''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = 'card_limit = #SUITS[visible_suit[j]],'
+position = "at"
+payload = 'card_limit = #SUITS_SORTED[visible_suit[j]],'
+
+[[patches]]
+[patches.regex]
+target = '=[SMODS _ "src/overrides.lua"]'
+match_indent = true
+pattern = '''
+			for i = 1\, \#SUITS\[visible_suit\[j\]\] do
+				if SUITS\[visible_suit\[j\]\]\[i\] then
+					local greyed\, _scale = nil\, 0\.7[\s\S]*
+					copy:hard_set_T\(\)
+					view_deck:emplace\(copy\)
+				end
+			end'''
+position = "at"
+payload = '''
+for i = 1, #SUITS_SORTED[visible_suit[j]] do
+  local card_string = SUITS_SORTED[visible_suit[j]][i]
+  local card = SUITS[visible_suit[j]][card_string]
+  VegasDeckStack.emplace_stacked_card(view_deck, card)
+end
+'''
