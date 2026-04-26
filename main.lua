@@ -6,6 +6,10 @@ lenient_bignum = lenient_bignum or function(a) return a end
 _G.VegasStuff = _G.VegasStuff or {}
 Vegasstuff = _G.VegasStuff
 
+COLLAGE_MODIFIED_TABLE_MINOR = COLLAGE_MODIFIED_TABLE_MINOR or {}
+COLLAGE_MODIFIED_TABLE_MAJOR = COLLAGE_MODIFIED_TABLE_MAJOR or {}
+COLLAGE_MODIFIED_TABLE = COLLAGE_MODIFIED_TABLE or {}
+
 local VEGASSTUFF_GEOMANCY_MAX_LEVELS = {
     sol = 20,
     terra = 5,
