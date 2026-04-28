@@ -276,14 +276,14 @@ vec4 effect(vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords)
     neon -= vec3(0.14, 0.02, 0.18) * palms * 0.32;
     neon += vec3(1.00, 0.08, 0.78) * ring((uv - 0.5) * vec2(texture_details.z / max(texture_details.w, 0.001), 1.0), 0.54, 0.018) * 0.08;
 
-    float scene_strength = clamp(0.56 + grid * 0.10 + sun * 0.08 + mountain_lines * 0.10 + jackpot * 0.10 + signs * 0.06, 0.0, 0.84);
+    float scene_strength = clamp(0.42 + grid * 0.08 + sun * 0.06 + mountain_lines * 0.08 + jackpot * 0.08 + signs * 0.05, 0.0, 0.66);
     pixel.rgb = mix(pixel.rgb, neon, scene_strength);
     pixel.rgb += neon_palette(uv.y + t * 0.06) * grid * 0.24;
     pixel.rgb += vec3(1.0, 0.06, 0.92) * grid * 0.20;
     pixel.rgb += vec3(0.0, 0.74, 1.0) * mountain_lines * 0.18;
     pixel.rgb += vec3(1.0, 0.85, 0.10) * jackpot * 0.28;
     pixel.rgb *= scan * mix(0.92, 1.05, vhs_bar);
-    pixel.rgb = mix(original, pixel.rgb, 0.84);
+    pixel.rgb = mix(original, pixel.rgb, 0.66);
     pixel.rgb = clamp(pixel.rgb, vec3(0.0), vec3(1.18));
 
     return dissolve_mask(pixel, texture_coords, uv + uniform_keepalive);

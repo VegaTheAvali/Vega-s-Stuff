@@ -29,7 +29,8 @@ local function vegasstuff_apply_cryptid_edeck_sprites()
     Cryptid.edeck_sprites.enhancement.m_vegasstuff_stitched = {atlas = deck_atlas, pos = {x = 0, y = 1}}
     Cryptid.edeck_sprites.enhancement.m_vegasstuff_creased = {atlas = deck_atlas, pos = {x = 1, y = 1}}
     Cryptid.edeck_sprites.edition.vegasstuff_boric = {atlas = deck_atlas, pos = {x = 5, y = 1}}
-
+    Cryptid.edeck_sprites.edition.vegasstuff_retrowave = {atlas = deck_atlas, pos = {x = 6, y = 1}}
+    Cryptid.edeck_sprites.edition.vegasstuff_event_horizon = {atlas = deck_atlas, pos = {x = 0, y = 2}, soul_pos = {x = 1, y = 2}}
 end
 
 local function vegasstuff_apply_cryptid_tag_sprites()
@@ -103,10 +104,27 @@ local function vegasstuff_hook_cryptid_shiny_tags()
     end
 end
 
+local function vegasstuff_remove_miniscule_from_edeck()
+    if not (SMODS.Mods.Cryptid and SMODS.Mods.Cryptid.can_load) then
+        return
+    end
+
+    local miniscule = G and G.P_CENTERS and G.P_CENTERS.e_vegasstuff_miniscule
+    if miniscule then
+        miniscule.no_edeck = true
+    end
+
+    local profile = G and G.PROFILES and G.SETTINGS and G.PROFILES[G.SETTINGS.profile]
+    if profile and profile.cry_edeck_edition == "vegasstuff_miniscule" then
+        profile.cry_edeck_edition = "foil"
+    end
+end
+
 local function vegasstuff_apply_cryptid_crossmod()
     vegasstuff_apply_cryptid_edeck_sprites()
     vegasstuff_apply_cryptid_tag_sprites()
     vegasstuff_hook_cryptid_shiny_tags()
+    vegasstuff_remove_miniscule_from_edeck()
 end
 
 if not _G.vegasstuff_cryptid_edeck_hooked then

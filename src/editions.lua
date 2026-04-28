@@ -279,6 +279,7 @@ SMODS.Edition {
     unlocked = true,
     discovered = true,
     no_collection = true,
+    no_edeck = true,
     
     draw = function(self, card, layer)
     end,
