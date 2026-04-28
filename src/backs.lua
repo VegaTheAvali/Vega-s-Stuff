@@ -57,6 +57,15 @@ local function solar_is_card_sleeves_grid_card(card)
         and area_config.thin_draw == 1
 end
 
+local function solar_is_stake_display(card)
+    local params = card and card.params or {}
+    local area_config = card and card.area and card.area.config
+    return params.stake_chip
+        or params.stake_chip_locked
+        or params.stake
+        or (area_config and (area_config.stake_select or area_config.stake_chips))
+end
+
 local function solar_back_center(card)
     if not card then
         return nil
@@ -64,6 +73,10 @@ local function solar_back_center(card)
 
     local params = card.params or {}
     if params.sleeve_card then
+        return nil
+    end
+
+    if solar_is_stake_display(card) then
         return nil
     end
 

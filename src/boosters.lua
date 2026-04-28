@@ -178,7 +178,7 @@ local function register_consumable_pack(args)
         atlas = args.atlas,
         pos = args.pos,
         group_key = args.group_key,
-        select_card = "consumeables",
+        draw_hand = args.draw_hand,
         discovered = true,
         in_pool = consumable_pack_in_pool(args),
         loc_vars = pack_loc_vars,
@@ -203,7 +203,8 @@ local function register_pack_variants(common, variants)
             atlas = common.atlas,
             pos = variant.pos,
             group_key = common.group_key,
-            set = common.set
+            set = common.set,
+            draw_hand = common.draw_hand
         }
     end
 end
@@ -228,7 +229,8 @@ register_pack_variants({
 register_pack_variants({
     atlas = "ZodiacPacks",
     group_key = "k_vegasstuff_zodiac_pack",
-    set = "zodiac"
+    set = "zodiac",
+    draw_hand = true
 }, {
     { key = "zodiac_pack", extra = 3, choose = 1, pos = { x = 0, y = 0 } },
     { key = "zodiacpack2", extra = 3, choose = 1, pos = { x = 1, y = 0 } },

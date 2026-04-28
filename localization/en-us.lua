@@ -234,10 +234,9 @@ return {
             c_vegasstuff_jupiter = {
                 name = "{C:vegasstuff_name_jupiter}Jupiter{}",
                 text = {
-                    "{C:attention}Booster Packs{} have",
-                    "{C:attention}+#1#{} {C:attention}pack selection{}",
-                    "{C:attention}Max level{} lets you take {C:attention}every card{}",
-                    "{C:inactive}(Level #2#/#3#){}",
+                    "{C:attention}Permanently{} gain",
+                    "{C:attention}+#1#{} {C:attention}consumable{} slots",
+                    "{C:inactive}(Level #2#/#3#, Total +#4# slots){}",
                 },
             },
             c_vegasstuff_luna = {
@@ -820,7 +819,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -828,7 +827,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -836,7 +835,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -844,7 +843,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -852,7 +851,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Jumbo Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -860,7 +859,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Jumbo Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -868,7 +867,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Jumbo Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -876,7 +875,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Jumbo Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -884,7 +883,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Mega Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -892,7 +891,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Mega Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -900,7 +899,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Mega Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -908,7 +907,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Mega Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -916,7 +915,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Mini Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -924,7 +923,7 @@ return {
                 group_name = "Astro Pack",
                 name = "Mini Astro Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} {C:attention}cards{}",
                 },
             },
@@ -932,7 +931,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Mini Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -940,7 +939,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Mini Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -964,7 +963,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -972,7 +971,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -980,7 +979,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
@@ -988,7 +987,7 @@ return {
                 group_name = "Zodiac Pack",
                 name = "Zodiac Pack",
                 text = {
-                    "Choose up to {C:attention}#1#{} of",
+                    "Use up to {C:attention}#1#{} of",
                     "{C:attention}#2#{} {C:purple}Zodiac{} {C:attention}cards{}",
                 },
             },
