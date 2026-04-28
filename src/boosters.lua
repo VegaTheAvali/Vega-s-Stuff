@@ -1,6 +1,33 @@
+local function numeric_value(value, fallback)
+    if type(to_number) == "function" then
+        value = to_number(value)
+    end
+
+    return tonumber(value) or fallback
+end
+
+local function booster_size_mod()
+    return numeric_value(G and G.GAME and G.GAME.modifiers and G.GAME.modifiers.booster_size_mod, 0)
+end
+
+local function booster_choice_mod()
+    return numeric_value(G and G.GAME and G.GAME.modifiers and G.GAME.modifiers.booster_choice_mod, 0)
+end
+
+local function effective_pack_extra(cfg)
+    return math.max(1, Vegasstuff.safe_int(numeric_value(cfg and cfg.extra, 1) + booster_size_mod(), 1))
+end
+
+local function effective_pack_choose(cfg)
+    local extra = effective_pack_extra(cfg)
+    local choose = Vegasstuff.safe_int(numeric_value(cfg and cfg.choose, 1) + booster_choice_mod(), 1)
+    return math.min(choose, extra), extra
+end
+
 local function pack_loc_vars(self, info_queue, card)
     local cfg = (card and card.ability) or self.config
-    return { vars = { cfg.choose, cfg.extra } }
+    local choose, extra = effective_pack_choose(cfg)
+    return { vars = { choose, extra } }
 end
 
 local function pack_particles()
@@ -101,6 +128,25 @@ local function geomancy_pack_card(key_append)
     return keyed_pack_card(choice.key, "geomancy", choice.source)
 end
 
+local function apply_geomancy_pack_choices()
+    if not (G and G.GAME and SMODS and SMODS.OPENED_BOOSTER) then
+        return
+    end
+
+    local booster = SMODS.OPENED_BOOSTER
+    local cfg = (booster and booster.ability)
+        or (booster and booster.config and booster.config.center and booster.config.center.config)
+        or {}
+    local choose, extra = effective_pack_choose(cfg)
+    G.GAME.pack_size = extra
+    G.GAME.pack_choices = choose
+end
+
+local function geomancy_pack_UIBox(self)
+    apply_geomancy_pack_choices()
+    return SMODS.Booster.create_UIBox(self)
+end
+
 local function consumable_pack_in_pool(args)
     if args.set ~= "geomancy" then
         return nil
@@ -182,6 +228,7 @@ local function register_consumable_pack(args)
         discovered = true,
         in_pool = consumable_pack_in_pool(args),
         loc_vars = pack_loc_vars,
+        create_UIBox = args.set == "geomancy" and geomancy_pack_UIBox or nil,
         create_card = function()
             if args.set == "geomancy" then
                 return geomancy_pack_card("vegasstuff_" .. args.key)

@@ -57,6 +57,7 @@ SMODS.Consumable {
     key = "croptid",
     set = "geomancy",
     pos = { x = 6, y = 0 },
+    soul_pos = { x = 9, y = 0 },
     
     cost = 0,
     unlocked = true,

@@ -811,7 +811,7 @@ local function max_level()
 end
 
 local function consumable_slots_for_level(target_level)
-    return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(target_level or 0), 0)
+    return Vegasstuff.safe_int(target_level or 0, 0)
 end
 
 local function pack_selections_for_level(target_level)

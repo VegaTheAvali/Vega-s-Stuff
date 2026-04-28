@@ -73,6 +73,14 @@ local function finish_zodiac_use()
     delay(0.5)
 end
 
+local function zodiac_loc_vars(enhancement_key, info_queue)
+    if info_queue and G and G.P_CENTERS and G.P_CENTERS[enhancement_key] then
+        info_queue[#info_queue + 1] = G.P_CENTERS[enhancement_key]
+    end
+
+    return { vars = {} }
+end
+
 local function use_zodiac_card(enhancement_key, card, copier)
     local used_card = copier or card
 
@@ -102,6 +110,9 @@ for i = 1, #ZODIACS do
         hidden = false,
         can_repeat_soul = false,
         atlas = 'ZodiacCards',
+        loc_vars = function(self, info_queue, card)
+            return zodiac_loc_vars(zodiac.enhancement_key, info_queue)
+        end,
         use = function(self, card, area, copier)
             use_zodiac_card(zodiac.enhancement_key, card, copier)
         end,
