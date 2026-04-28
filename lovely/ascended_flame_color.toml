@@ -1,0 +1,44 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 200
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''
+        parameter.lick[i] = math.min(math.max(((parameter.colour[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
+'''
+position = "at"
+payload = '''
+        local vegas_flame_highlight = (Vegasstuff and Vegasstuff.flame_highlight_colour and Vegasstuff.flame_highlight_colour()) or G.C.YELLOW
+        parameter.lick[i] = math.min(math.max(((parameter.colour[i]*0.5+vegas_flame_highlight[i]*0.5) + 0.1)^2, 0.1), 1)
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''
+    G.ARGS.flame_handler[key] = G.ARGS.flame_handler[key] or parameter:flame_handler()
+'''
+position = "at"
+payload = '''
+    G.ARGS.flame_handler[key] = G.ARGS.flame_handler[key] or parameter:flame_handler()
+    local vegas_asc_active = Vegasstuff and Vegasstuff.asc_flame_active and Vegasstuff.asc_flame_active()
+    if vegas_asc_active then
+        local vegas_flame_colour = (Vegasstuff and Vegasstuff.flame_highlight_colour and Vegasstuff.flame_highlight_colour()) or G.C.YELLOW
+        local vegas_ui_colour = (Vegasstuff and Vegasstuff.asc_ui_colour and Vegasstuff.asc_ui_colour()) or vegas_flame_colour
+        if key == 'chips' and G and G.C and G.C.UI_CHIPS then
+            for i = 1, 4 do G.C.UI_CHIPS[i] = vegas_ui_colour[i] or G.C.UI_CHIPS[i] end
+        elseif key == 'mult' and G and G.C and G.C.UI_MULT then
+            for i = 1, 4 do G.C.UI_MULT[i] = vegas_ui_colour[i] or G.C.UI_MULT[i] end
+        end
+        G.ARGS.flame_handler[key].colour = vegas_flame_colour
+        G.ARGS.flame_handler[key].accent = vegas_flame_colour
+    else
+        G.ARGS.flame_handler[key].colour = parameter.colour
+        G.ARGS.flame_handler[key].accent = parameter.lick
+    end
+'''
+match_indent = true
