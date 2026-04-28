@@ -30,7 +30,10 @@ local function vegasstuff_apply_cryptid_edeck_sprites()
     Cryptid.edeck_sprites.enhancement.m_vegasstuff_creased = {atlas = deck_atlas, pos = {x = 1, y = 1}}
     Cryptid.edeck_sprites.edition.vegasstuff_boric = {atlas = deck_atlas, pos = {x = 5, y = 1}}
     Cryptid.edeck_sprites.edition.vegasstuff_retrowave = {atlas = deck_atlas, pos = {x = 6, y = 1}}
-    Cryptid.edeck_sprites.edition.vegasstuff_event_horizon = {atlas = deck_atlas, pos = {x = 0, y = 2}, soul_pos = {x = 1, y = 2}}
+    Cryptid.edeck_sprites.edition.vegasstuff_event_horizon = {atlas = deck_atlas, pos = {x = 0, y = 2}}
+    Cryptid.edeck_sprites.edition.vegasstuff_planetarium_deluxe = {atlas = deck_atlas, pos = {x = 1, y = 2}}
+    Cryptid.edeck_sprites.edition.vegasstuff_supernova = {atlas = deck_atlas, pos = {x = 2, y = 2}}
+    Cryptid.edeck_sprites.edition.vegasstuff_singularity_aquarium = {atlas = deck_atlas, pos = {x = 3, y = 2}}
 end
 
 local function vegasstuff_apply_cryptid_tag_sprites()
