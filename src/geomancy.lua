@@ -814,19 +814,35 @@ local function consumable_slots_for_level(target_level)
     return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(target_level or 0), 0)
 end
 
+local function pack_selections_for_level(target_level)
+    return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(target_level or 0), 0)
+end
+
 local function consumable_slot_gain(current_level, next_level)
     return math.max(0, consumable_slots_for_level(next_level) - consumable_slots_for_level(current_level))
 end
 
+local function pack_selection_gain(current_level, next_level)
+    return math.max(0, pack_selections_for_level(next_level) - pack_selections_for_level(current_level))
+end
+
 local function apply_consumable_slot_gain(amount)
-    if G and G.consumeables and G.consumeables.config then
+    if amount > 0 and G and G.consumeables and G.consumeables.config then
         G.consumeables.config.card_limit = (G.consumeables.config.card_limit or 0) + amount
     end
 end
 
-local function consumable_slot_status(gain)
-    local label = gain == 1 and " Consumable Slot" or " Consumable Slots"
-    return "+" .. tostring(gain) .. label
+local function apply_pack_selection_gain(amount)
+    if amount > 0 and G and G.GAME then
+        G.GAME.modifiers = G.GAME.modifiers or {}
+        G.GAME.modifiers.booster_choice_mod = (G.GAME.modifiers.booster_choice_mod or 0) + amount
+    end
+end
+
+local function jupiter_status(selection_gain, slot_gain)
+    local selection_label = selection_gain == 1 and " Selection" or " Selections"
+    local slot_label = slot_gain == 1 and " Slot" or " Slots"
+    return "+" .. tostring(selection_gain) .. selection_label .. ", +" .. tostring(slot_gain) .. slot_label
 end
 
 SMODS.Consumable {
@@ -854,8 +870,18 @@ SMODS.Consumable {
     loc_vars = function(self)
         local level = Vegasstuff.get_geomancy_level_from_extra(self.config.extra)
         local next_level = math.min(level + 1, self.config.extra.max_level)
-        local next_gain = level >= self.config.extra.max_level and 0 or consumable_slot_gain(level, next_level)
-        return { vars = { next_gain, level, self.config.extra.max_level, consumable_slots_for_level(level) } }
+        local selection_gain = level >= self.config.extra.max_level and 0 or pack_selection_gain(level, next_level)
+        local slot_gain = level >= self.config.extra.max_level and 0 or consumable_slot_gain(level, next_level)
+        return {
+            vars = {
+                selection_gain,
+                slot_gain,
+                level,
+                self.config.extra.max_level,
+                pack_selections_for_level(level),
+                consumable_slots_for_level(level)
+            }
+        }
     end,
     can_use = function(self)
         return G and G.consumeables and G.consumeables.config and Vegasstuff.geomancy_can_use(self)
@@ -869,10 +895,12 @@ SMODS.Consumable {
         end
 
         local next_level = current_level + 1
-        local gain = consumable_slot_gain(current_level, next_level)
-        apply_consumable_slot_gain(gain)
+        local selection_gain = pack_selection_gain(current_level, next_level)
+        local slot_gain = consumable_slot_gain(current_level, next_level)
+        apply_pack_selection_gain(selection_gain)
+        apply_consumable_slot_gain(slot_gain)
         Vegasstuff.set_geomancy_level_from_extra(extra, next_level)
-        Vegasstuff.juice_and_status(used_card, consumable_slot_status(gain), (G.C.SECONDARY_SET and G.C.SECONDARY_SET.Tarot) or G.C.PURPLE)
+        Vegasstuff.juice_and_status(used_card, jupiter_status(selection_gain, slot_gain), (G.C.SECONDARY_SET and G.C.SECONDARY_SET.Tarot) or G.C.PURPLE)
     end,
 }
 end

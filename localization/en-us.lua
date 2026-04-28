@@ -235,8 +235,9 @@ return {
                 name = "{C:vegasstuff_name_jupiter}Jupiter{}",
                 text = {
                     "{C:attention}Permanently{} gain",
-                    "{C:attention}+#1#{} {C:attention}consumable{} slots",
-                    "{C:inactive}(Level #2#/#3#, Total +#4# slots){}",
+                    "{C:attention}+#1#{} {C:attention}pack selection{}",
+                    "and {C:attention}+#2#{} {C:attention}consumable{} slots",
+                    "{C:inactive}(Level #3#/#4#, Total +#5# selections, +#6# slots){}",
                 },
             },
             c_vegasstuff_luna = {
