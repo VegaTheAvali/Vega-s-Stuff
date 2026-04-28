@@ -1108,16 +1108,17 @@ return {
         },
         quips = {
             pnr_vegasstuff_vega_1 = {
-                "The stars are",
-                "listening.",
+                "Your chips",
+                "look yummy",
             },
             pnr_vegasstuff_vega_2 = {
-                "Asteres Planetai",
-                "online.",
+                "Who the",
+                "crap are",
+                "you?",
             },
             pnr_vegasstuff_vega_3 = {
-                "Let's bend",
-                "the hand limit.",
+                "Wow,",
+                "much card",
             },
         },
     },
