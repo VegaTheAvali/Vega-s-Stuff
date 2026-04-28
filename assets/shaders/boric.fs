@@ -57,33 +57,33 @@ vec4 effect(vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords)
     vec2 uv = (((texture_coords) * (image_details)) - texture_details.xy * texture_details.zw) / texture_details.zw;
     vec4 pixel = Texel(texture, texture_coords);
 
-    // Real-time payload from send_to_shader.
+    
     float t = boric.y;
-    // Keep boric.x referenced so the custom uniform payload remains active.
+    
     float intensity = clamp(1.20 + boric.x * 0.06, 1.0, 1.7);
 
-    // Coordinate space: y grows upward from card bottom.
+    
     float y = 1.0 - uv.y;
     vec2 p = vec2((uv.x - 0.5) * 2.0, y);
 
-    // Bottom-two-thirds coverage with a soft noisy top edge.
+    
     float edge_noise = fbm(vec2(uv.x * 6.0, 2.0));
     float top_cut = 0.74 + (edge_noise - 0.5) * 0.04;
     float vertical_mask = 1.0 - smoothstep(top_cut, top_cut + 0.10, y);
 
-    // Cartoony flame silhouette: chunky body + wobble.
+    
     float wobble = 0.10 * sin(t * 1.8 + y * 8.0) + 0.06 * sin(t * 3.1 - y * 13.0);
     float half_width = mix(1.05, 0.18, smoothstep(0.00, 1.10, y));
     float body_shape = 1.0 - smoothstep(half_width, half_width + 0.09, abs(p.x + wobble));
 
-    // Rounded tongue cutouts near the upper body for a cel-animated look.
+    
     float tongue_wave = sin((p.x * 7.0 - t * 2.3) + fbm(vec2(p.x * 2.5, y * 3.0 - t * 0.6)) * 2.0) * 0.5 + 0.5;
     float tongue_cut = smoothstep(0.38, 0.88, tongue_wave) * smoothstep(0.22, 0.90, y) * (1.0 - smoothstep(0.90, 1.30, y));
 
     float flame = clamp(body_shape - tongue_cut * 0.14, 0.0, 1.0) * vertical_mask;
     flame *= mix(0.9, 1.1, (intensity - 1.0) / 0.7);
 
-    // Cel-shaded bands.
+    
     float band_a = smoothstep(0.20, 0.55, flame);
     float band_b = smoothstep(0.55, 0.82, flame);
     float band_c = smoothstep(0.82, 1.00, flame);
@@ -97,7 +97,7 @@ vec4 effect(vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords)
     flame_col = mix(flame_col, fire_inner, band_b);
     flame_col = mix(flame_col, fire_core, band_c);
 
-    // Stable base fill prevents moving dark seams inside the flame body.
+    
     float base_fill = smoothstep(0.04, 0.22, body_shape * vertical_mask);
     pixel.rgb = mix(pixel.rgb, fire_outer, base_fill * 0.45);
 
@@ -163,3 +163,4 @@ vec4 position(mat4 transform_projection, vec4 vertex_position)
     return transform_projection * vertex_position + vec4(0., 0., 0., scale);
 }
 #endif
+
