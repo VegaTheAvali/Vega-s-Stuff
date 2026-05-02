@@ -175,6 +175,12 @@ local function duality_reduction_for_id(id)
     return id / 2
 end
 
+local function duality_card_id(card)
+    if card and type(card.get_id) == "function" then
+        return card:get_id()
+    end
+end
+
 SMODS.Enhancement {
     key = 'duality',
     pos = { x = 3, y = 0 },
@@ -193,15 +199,18 @@ SMODS.Enhancement {
     weight = 5,
 
     loc_vars = function(self, info_queue, card)
-        if not card then return {vars = {0}} end
+        local id = duality_card_id(card)
+        if not id then
+            return {vars = {"rank/2"}}
+        end
 
-        local reduction = duality_reduction_for_id(card:get_id())
+        local reduction = duality_reduction_for_id(id)
         return {vars = {reduction}}
     end,
 
     calculate = function(self, card, context)
         if context.main_scoring and context.cardarea == G.play then
-            local reduction = duality_reduction_for_id(card:get_id())
+            local reduction = duality_reduction_for_id(duality_card_id(card))
             if reduction <= 0 then
                 return
             end
