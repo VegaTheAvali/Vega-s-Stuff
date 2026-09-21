@@ -1,0 +1,22 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''if v.seal then card:set_seal(v.seal, true, true) end'''
+position = "after"
+payload = '''
+if v.sticker then
+    card:add_sticker(v.sticker, true)
+end
+
+if v.stickers then
+    for _, sticker in ipairs(v.stickers) do
+        card:add_sticker(sticker, true)
+    end
+end
+'''
+match_indent = true

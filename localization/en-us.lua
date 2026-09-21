@@ -38,6 +38,165 @@ return {
                     "Unlocked by default.",
                 },
             },
+
+            -- HAND JOKERS
+
+            j_vegasstuff_posted = {
+            name = "Posted Joker",
+            text = {
+                "{C:mult}+#1#{} Mult if played",
+                "hand is a {C:attention}Postage{}"
+            }
+            },
+
+            j_vegasstuff_publicized = {
+                name = "Publicized Joker",
+                text = {
+                    "{C:chips}+#1#{} Chips if played",
+                    "hand is a {C:attention}Postage{}"
+                }
+            },
+
+                 j_vegasstuff_caught = {
+                name = "Caught Joker",
+                text = {
+                    "{C:mult}+#1#{} Mult if played",
+                    "hand is a {C:attention}Package{}"
+                }
+            },
+
+            j_vegasstuff_captured = {
+                name = "Captured Joker",
+                text = {
+                    "{C:chips}+#1#{} Chips if played",
+                    "hand is a {C:attention}Package{}"
+                }
+            },
+
+            j_vegasstuff_clean = {
+                name = "Clean Joker",
+                text = {
+                    "{C:mult}+#1#{} Mult if played",
+                    "hand is a {C:attention}Mint{}"
+                }
+            },
+
+            j_vegasstuff_fresh = {
+                name = "Fresh Joker",
+                text = {
+                    "{C:chips}+#1#{} Chips if played",
+                    "hand is a {C:attention}Mint{}"
+                }
+            },
+
+            j_vegasstuff_bewitched = {
+                name = "Bewitched Joker",
+                text = {
+                    "{C:mult}+#1#{} Mult if played",
+                    "hand is a {C:attention}Spell{}"
+                }
+            },
+
+            j_vegasstuff_enchanted = {
+                name = "Enchanted Joker",
+                text = {
+                    "{C:chips}+#1#{} Chips if played",
+                    "hand is a {C:attention}Spell{}"
+                }
+            },
+
+            j_vegasstuff_spellbound = {
+                name = "Spellbound Joker",
+                text = {
+                    "{C:mult}+#1#{} Mult if played",
+                    "hand is a {C:attention}Cauldron{}"
+                }
+            },
+
+            j_vegasstuff_hexed = {
+                name = "Hexed Joker",
+                text = {
+                    "{C:chips}+#1#{} Chips if played",
+                    "hand is a {C:attention}Cauldron{}"
+                }
+            },
+
+            -- SUIT JOKERS
+
+                      j_vegasstuff_bloodthirsty = {
+                name = "Bloodthirsty Joker",
+                text = {
+                    "Played cards with",
+                    "{V:1}#2#{} suit give",
+                    "{C:mult}+#1#{} Mult when scored"
+                }
+            },
+
+            j_vegasstuff_drunken = {
+                name = "Drunken Joker",
+                text = {
+                    "Played cards with",
+                    "{V:1}#2#{} suit give",
+                    "{C:mult}+#1#{} Mult when scored"
+                }
+            },
+
+            j_vegasstuff_covetous = {
+                name = "Covetous Joker",
+                text = {
+                    "Played cards with",
+                    "{V:1}#2#{} suit give",
+                    "{C:mult}+#1#{} Mult when scored"
+                }
+            },
+
+            j_vegasstuff_zealous = {
+                name = "Zealous Joker",
+                text = {
+                    "Played cards with",
+                    "{V:1}#2#{} suit give",
+                    "{C:mult}+#1#{} Mult when scored"
+                }
+            },
+
+            j_vegasstuff_cinnabar = {
+                name = "Cinnabar",
+                text = {
+                    "placeholder"
+                }
+            },
+
+            j_vegasstuff_aquamarine = {
+                name = "Aquamarine",
+                text = {
+                    "placeholder"
+                }
+            },
+
+            j_vegasstuff_sunstone = {
+                name = "Sunstone",
+                text = {
+                    "placeholder"
+                }
+            },
+
+            j_vegasstuff_amethyst = {
+                name = "Amethyst",
+                text = {
+                    "placeholder"
+                }
+            },
+
+            -- MISC JOKERS
+            j_vegasstuff_pesterchum = {
+                name = "Pesterchum Chat Client",
+                text = {
+                    "Jokers with {C:attention}\"Joker\"{}",
+                    "in their name each give",
+                    "{X:chips,C:white}X#1#{} Chips",
+                },
+            },
+
         },
         Enhanced = {
             m_vegasstuff_anaphase = {
@@ -317,6 +476,23 @@ return {
                 text = {
                     "Earn {C:money}+$#1#{} from {C:attention}Blind payout{}",
                     "{C:inactive}(Level #2#/#4#, Total +$#3# payout){}",
+                },
+            },
+
+            c_vegasstuff_singularity = {
+                name = "Singularity",
+                text = {
+                    "{C:attention}Permanently{} increase the",
+                    "max Level of all other",
+                    "{C:attention}Geomancy{} cards by {C:attention}+1{}",
+                    "{C:inactive}(Level #1#/#2#){}",
+                },
+            },
+
+            c_vegasstuff_fortuna_minor = {
+                name = "Fortuna Minor",
+                text = {
+                    "Gain {C:money}$5{}",
                 },
             },
         },
@@ -1082,6 +1258,7 @@ return {
             k_vegasstuff_pack_of_creation = "Pack of Creation",
             k_vegasstuff_zodiac_pack = "Zodiac Pack",
             k_zodiac = "Zodiac",
+            k_vegasstuff_max_level = "+1 Max Level",
         },
         labels = {
             k_vegasstuff_cry_exotic = "Exotic",
@@ -1099,6 +1276,20 @@ return {
             vegasstuff_Pentacles = "Pentacles",
             vegasstuff_Swords = "Swords",
             vegasstuff_Wands = "Wands",
+        },
+         poker_hands = {
+            vegasstuff_postage = "Postage",
+            vegasstuff_package = "Package",
+            vegasstuff_mint = "Mint",
+            vegasstuff_spell = "Spell",
+            vegasstuff_cauldron = "Cauldron",
+        },
+        poker_hand_descriptions = {
+            vegasstuff_package = { "5 cards with a Seal" },
+            vegasstuff_postage = { "5 cards with a Sticker" },
+            vegasstuff_mint = { "5 cards with an Edition" },
+            vegasstuff_spell = { "5 cards with an Enhancement" },
+            vegasstuff_cauldron = { "4 cards, each with exactly one different Modifier" },
         },
         suits_singular = {
             vegasstuff_Cups = "Chalice",

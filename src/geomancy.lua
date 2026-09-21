@@ -39,9 +39,111 @@ SMODS.ConsumableType {
         ['c_vegasstuff_saturnus'] = true,
         ['c_vegasstuff_uranus'] = true,
         ['c_vegasstuff_jupiter'] = true,
+        ['c_vegasstuff_singularity'] = true,
+        ['c_vegasstuff_fortuna_minor'] = true,
     },
     
+
 }
+
+local GEOMANCY_UPGRADES = {
+    "sol",
+    "terra",
+    "mars",
+    "luna",
+    "neptunus",
+    "venus",
+    "pluto",
+    "mercurius",
+    "saturnus",
+    "uranus",
+    "jupiter",
+}
+
+local function singularity_level()
+    if not (G and G.GAME) then
+        return 0
+    end
+
+    return Vegasstuff.safe_int(
+        G.GAME.vegasstuff_singularity_level,
+        0
+    )
+end
+
+local function geomancy_max_level(extra)
+    return Vegasstuff.safe_int(extra and extra.max_level, 0)
+        + singularity_level()
+end
+
+local function with_geomancy_max_level(self, callback)
+    local extra = self and self.config and self.config.extra
+
+    if not extra or extra.tracker_key == "singularity" then
+        return callback()
+    end
+
+    local original_max = extra.max_level
+    extra.max_level = geomancy_max_level(extra)
+
+    local ok, result, secondary = pcall(callback)
+
+    extra.max_level = original_max
+
+    if not ok then
+        error(result)
+    end
+
+    return result, secondary
+end
+
+local function can_spawn_geomancy(self, args)
+    return with_geomancy_max_level(self, function()
+        return Vegasstuff.can_spawn_geomancy_card(self, args)
+    end)
+end
+
+local function geomancy_can_use(self)
+    return with_geomancy_max_level(self, function()
+        return Vegasstuff.geomancy_can_use(self)
+    end)
+end
+
+local function has_reached_base_geomancy_cap()
+    if not (G and G.GAME and G.P_CENTERS) then
+        return false
+    end
+
+    for _, key in ipairs(GEOMANCY_UPGRADES) do
+        local center = G.P_CENTERS["c_vegasstuff_" .. key]
+        local extra = center and center.config and center.config.extra
+
+        if extra and Vegasstuff.get_geomancy_level(key) >= Vegasstuff.safe_int(extra.max_level, 0) then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function count_maxed_geomancy()
+    if not (G and G.GAME and G.P_CENTERS) then
+        return 0
+    end
+
+    local count = 0
+
+    for _, key in ipairs(GEOMANCY_UPGRADES) do
+        local center = G.P_CENTERS["c_vegasstuff_" .. key]
+        local extra = center and center.config and center.config.extra
+
+        if extra and Vegasstuff.get_geomancy_level(key) >= geomancy_max_level(extra) then
+            count = count + 1
+        end
+    end
+
+    return count
+end
 
 do
 local ASC_POWER_GAIN = 1.25
@@ -76,26 +178,26 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         return {
             vars = {
                 Vegasstuff.format_number(asc_power_gain(), 2),
                 Vegasstuff.get_geomancy_level_from_extra(self.config.extra),
-                self.config.extra.max_level,
+                geomancy_max_level(self.config.extra),
                 colours = { ASCENDED_COLOUR }
             }
         }
     end,
     can_use = function(self)
-        return Vegasstuff.geomancy_can_use(self)
+        return geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if level >= extra.max_level then
+        if level >= geomancy_max_level(extra) then
             return
         end
 
@@ -135,20 +237,20 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = "GeomancyCards",
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         local level = Vegasstuff.get_geomancy_level_from_extra(self.config.extra)
-        return { vars = { hand_size_gain(), level, self.config.extra.max_level, level * hand_size_gain() } }
+        return { vars = { hand_size_gain(), level, geomancy_max_level(self.config.extra), level * hand_size_gain() } }
     end,
     can_use = function(self)
-        return G and G.hand and Vegasstuff.geomancy_can_use(self)
+        return G and G.hand and geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if level >= extra.max_level then
+        if level >= geomancy_max_level(extra) then
             return
         end
 
@@ -192,23 +294,23 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        local next_level = math.min(level + 1, extra.max_level)
-        local next_gain = level >= extra.max_level and 0 or leveled_deck_stat_gain(self, next_level)
-        return { vars = { next_gain, level, total_deck_stat_gain(self, level), extra.max_level } }
+        local next_level = math.min(level + 1, geomancy_max_level(extra))
+        local next_gain = level >= geomancy_max_level(extra) and 0 or leveled_deck_stat_gain(self, next_level)
+        return { vars = { next_gain, level, total_deck_stat_gain(self, level), geomancy_max_level(extra) } }
     end,
     can_use = function(self)
-        return G and G.playing_cards and #G.playing_cards > 0 and Vegasstuff.geomancy_can_use(self)
+        return G and G.playing_cards and #G.playing_cards > 0 and geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local current_level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if current_level >= extra.max_level then
+        if current_level >= geomancy_max_level(extra) then
             return
         end
 
@@ -258,23 +360,23 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        local next_level = math.min(level + 1, extra.max_level)
-        local next_gain = level >= extra.max_level and 0 or leveled_deck_stat_gain(self, next_level)
-        return { vars = { next_gain, level, total_deck_stat_gain(self, level), extra.max_level } }
+        local next_level = math.min(level + 1, geomancy_max_level(extra))
+        local next_gain = level >= geomancy_max_level(extra) and 0 or leveled_deck_stat_gain(self, next_level)
+        return { vars = { next_gain, level, total_deck_stat_gain(self, level), geomancy_max_level(extra) } }
     end,
     can_use = function(self)
-        return G and G.playing_cards and #G.playing_cards > 0 and Vegasstuff.geomancy_can_use(self)
+        return G and G.playing_cards and #G.playing_cards > 0 and geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local current_level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if current_level >= extra.max_level then
+        if current_level >= geomancy_max_level(extra) then
             return
         end
 
@@ -326,7 +428,7 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         local extra = self.config.extra
@@ -335,19 +437,19 @@ SMODS.Consumable {
             vars = {
                 Vegasstuff.format_number(xchips_gain(extra), 2),
                 level,
-                extra.max_level,
+                geomancy_max_level(extra),
                 Vegasstuff.format_number(total_xchips(level, extra), 2)
             }
         }
     end,
     can_use = function(self)
-        return G and G.playing_cards and #G.playing_cards > 0 and Vegasstuff.geomancy_can_use(self)
+        return G and G.playing_cards and #G.playing_cards > 0 and geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if level >= extra.max_level then
+        if level >= geomancy_max_level(extra) then
             return
         end
 
@@ -424,23 +526,23 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self, { solar_disabled = true })
+        return can_spawn_geomancy(self, { solar_disabled = true })
     end,
     loc_vars = function(self)
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        local next_level = math.min(level + 1, extra.max_level)
-        local next_gain = level >= extra.max_level and 0 or blind_payout_gain(self, next_level)
-        return { vars = { next_gain, level, blind_payout_total(level), extra.max_level } }
+        local next_level = math.min(level + 1, geomancy_max_level(extra))
+        local next_gain = level >= geomancy_max_level(extra) and 0 or blind_payout_gain(self, next_level)
+        return { vars = { next_gain, level, blind_payout_total(level), geomancy_max_level(extra) } }
     end,
     can_use = function(self)
-        return Vegasstuff.geomancy_can_use(self)
+        return geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local current_level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if current_level >= extra.max_level then
+        if current_level >= geomancy_max_level(extra) then
             return
         end
 
@@ -487,7 +589,7 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         local extra = self.config.extra
@@ -496,19 +598,19 @@ SMODS.Consumable {
             vars = {
                 Vegasstuff.format_number(xmult_gain(extra), 2),
                 level,
-                extra.max_level,
+                geomancy_max_level(extra),
                 Vegasstuff.format_number(total_xmult(level, extra), 2)
             }
         }
     end,
     can_use = function(self)
-        return G and G.playing_cards and #G.playing_cards > 0 and Vegasstuff.geomancy_can_use(self)
+        return G and G.playing_cards and #G.playing_cards > 0 and geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if level >= extra.max_level then
+        if level >= geomancy_max_level(extra) then
             return
         end
 
@@ -527,7 +629,7 @@ end
 
 do
 local BASE_TARGET_BUYS = 10
-local MIN_TARGET_BUYS = 1
+local MIN_TARGET_BUYS = 0
 
 local function level()
     return Vegasstuff.get_geomancy_level("mercurius")
@@ -601,19 +703,19 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = "GeomancyCards",
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self, { solar_disabled = true })
+        return can_spawn_geomancy(self, { solar_disabled = true })
     end,
     loc_vars = function(self)
-        return { vars = { required_buys(), get_counter(), level(), self.config.extra.max_level } }
+        return { vars = { required_buys(), get_counter(), level(), geomancy_max_level(self.config.extra) } }
     end,
     can_use = function(self)
-        return Vegasstuff.geomancy_can_use(self)
+        return geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local current_level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if current_level >= extra.max_level then
+        if current_level >= geomancy_max_level(extra) then
             return
         end
 
@@ -626,7 +728,7 @@ end
 
 do
 local function interest_bonus_for_level(level)
-    return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(math.min(4, Vegasstuff.safe_int(level, 0))), 0)
+    return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(Vegasstuff.safe_int(level, 0)), 0)
 end
 
 local function current_interest_bonus()
@@ -679,23 +781,23 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = 'GeomancyCards',
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self, { solar_disabled = true })
+        return can_spawn_geomancy(self, { solar_disabled = true })
     end,
     loc_vars = function(self)
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
         local current_total = interest_bonus_for_level(level)
-        local next_total = level >= extra.max_level and current_total or interest_bonus_for_level(level + 1)
-        return { vars = { next_total - current_total, level, current_total, extra.max_level } }
+        local next_total = level >= geomancy_max_level(extra) and current_total or interest_bonus_for_level(level + 1)
+        return { vars = { next_total - current_total, level, current_total, geomancy_max_level(extra) } }
     end,
     can_use = function(self)
-        return Vegasstuff.geomancy_can_use(self)
+        return geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if level >= extra.max_level then
+        if level >= geomancy_max_level(extra) then
             return
         end
 
@@ -708,7 +810,7 @@ end
 
 do
 local BASE_TARGET_BUYS = 5
-local MIN_TARGET_BUYS = 1
+local MIN_TARGET_BUYS = 0
 
 local function level()
     return Vegasstuff.get_geomancy_level("uranus")
@@ -782,19 +884,19 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = "GeomancyCards",
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self, { solar_disabled = true })
+        return can_spawn_geomancy(self, { solar_disabled = true })
     end,
     loc_vars = function(self)
-        return { vars = { required_buys(), get_counter(), level(), self.config.extra.max_level } }
+        return { vars = { required_buys(), get_counter(), level(), geomancy_max_level(self.config.extra) } }
     end,
     can_use = function(self)
-        return Vegasstuff.geomancy_can_use(self)
+        return geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local current_level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if current_level >= extra.max_level then
+        if current_level >= geomancy_max_level(extra) then
             return
         end
 
@@ -865,32 +967,32 @@ SMODS.Consumable {
     can_repeat_soul = false,
     atlas = "GeomancyCards",
     in_pool = function(self)
-        return Vegasstuff.can_spawn_geomancy_card(self)
+        return can_spawn_geomancy(self)
     end,
     loc_vars = function(self)
         local level = Vegasstuff.get_geomancy_level_from_extra(self.config.extra)
-        local next_level = math.min(level + 1, self.config.extra.max_level)
-        local selection_gain = level >= self.config.extra.max_level and 0 or pack_selection_gain(level, next_level)
-        local slot_gain = level >= self.config.extra.max_level and 0 or consumable_slot_gain(level, next_level)
+        local next_level = math.min(level + 1, geomancy_max_level(self.config.extra))
+        local selection_gain = level >= geomancy_max_level(self.config.extra) and 0 or pack_selection_gain(level, next_level)
+        local slot_gain = level >= geomancy_max_level(self.config.extra) and 0 or consumable_slot_gain(level, next_level)
         return {
             vars = {
                 selection_gain,
                 slot_gain,
                 level,
-                self.config.extra.max_level,
+                geomancy_max_level(self.config.extra),
                 pack_selections_for_level(level),
                 consumable_slots_for_level(level)
             }
         }
     end,
     can_use = function(self)
-        return G and G.consumeables and G.consumeables.config and Vegasstuff.geomancy_can_use(self)
+        return G and G.consumeables and G.consumeables.config and geomancy_can_use(self)
     end,
     use = function(self, card, area, copier)
         local used_card = copier or card
         local extra = self.config.extra
         local current_level = Vegasstuff.get_geomancy_level_from_extra(extra)
-        if current_level >= extra.max_level then
+        if current_level >= geomancy_max_level(extra) then
             return
         end
 
@@ -904,3 +1006,107 @@ SMODS.Consumable {
     end,
 }
 end
+
+
+-- Singularity
+SMODS.Consumable {
+    key = "singularity",
+
+    config = {
+        extra = {
+            max_level = 10
+        }
+    },
+
+    set = "geomancy",
+    pos = { x = 4, y = 2 },
+
+    soul_pos = {
+        x = 5,
+        y = 2,
+        extra = { x = 6, y = 2 }
+    },
+
+    cost = 3,
+    unlocked = true,
+    discovered = true,
+    hidden = false,
+    can_repeat_soul = false,
+    atlas = "GeomancyCards",
+
+    in_pool = function(self)
+        return has_reached_base_geomancy_cap()
+            and singularity_level() < self.config.extra.max_level
+    end,
+
+    loc_vars = function(self)
+        return {
+            vars = {
+                singularity_level(),
+                self.config.extra.max_level
+            }
+        }
+    end,
+
+    can_use = function(self)
+        return singularity_level() < self.config.extra.max_level
+    end,
+
+    use = function(self, card, area, copier)
+        local level = singularity_level()
+
+        if level >= self.config.extra.max_level then
+            return
+        end
+
+        G.GAME.vegasstuff_singularity_level = level + 1
+
+        Vegasstuff.juice_and_status(
+            copier or card,
+            localize("k_vegasstuff_max_level"),
+            G.C.PURPLE
+        )
+    end,
+}
+
+
+-- Fortuna Minor
+SMODS.Consumable {
+    key = "fortuna_minor",
+    set = "geomancy",
+
+    atlas = "GeomancyCards",
+    pos = { x = 2, y = 2 },
+
+    cost = 3,
+    unlocked = true,
+    discovered = true,
+    no_collection = true,
+
+    weight = 10,
+
+    get_weight = function(self, weight)
+        return (weight or self.weight or 10) * math.max(1, count_maxed_geomancy())
+    end,
+
+    in_pool = function(self)
+        if count_maxed_geomancy() > 0 then
+            return true, { allow_duplicates = true }
+        end
+
+        return false
+    end,
+
+    can_use = function(self)
+        return true
+    end,
+
+    use = function(self, card, area, copier)
+        ease_dollars(5)
+        Vegasstuff.juice_and_status(
+            copier or card,
+            "+$5",
+            G.C.MONEY
+        )
+    end,
+}

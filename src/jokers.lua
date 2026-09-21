@@ -177,3 +177,710 @@ SMODS.Joker {
     end
 }
 end
+
+
+-- Hand Jokers. 
+
+-- Posted Joker
+
+SMODS.Joker {
+    key = "posted",
+    atlas = "HandJokers",
+    pos = { x = 3, y = 0 },
+    config = { extra = { bonus = 15 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = { card.ability.extra.bonus }
+        }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_postage"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_postage"]) then
+
+            return {
+                mult = card.ability.extra.bonus
+            }
+        end
+    end,
+}
+
+-- Publicized Joker
+
+SMODS.Joker {
+    key = "publicized",
+    atlas = "HandJokers",
+    pos = { x = 3, y = 1 },
+    config = { extra = { bonus = 100 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = { card.ability.extra.bonus }
+        }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_postage"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_postage"]) then
+
+            return {
+                chips = card.ability.extra.bonus
+            }
+        end
+    end,
+}
+
+-- Caught Joker
+
+SMODS.Joker {
+    key = "caught",
+    atlas = "HandJokers",
+    pos = { x = 2, y = 0 },
+    config = { extra = { bonus = 13 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_package"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_package"]) then
+            return { mult = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Captured Joker
+
+SMODS.Joker {
+    key = "captured",
+    atlas = "HandJokers",
+    pos = { x = 2, y = 1 },
+    config = { extra = { bonus = 90 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_package"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_package"]) then
+            return { chips = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Clean Joker
+
+SMODS.Joker {
+    key = "clean",
+    atlas = "HandJokers",
+    pos = { x = 1, y = 0 },
+    config = { extra = { bonus = 14 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_mint"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_mint"]) then
+            return { mult = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Fresh Joker
+
+SMODS.Joker {
+    key = "fresh",
+    atlas = "HandJokers",
+    pos = { x = 1, y = 1 },
+    config = { extra = { bonus = 100 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_mint"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_mint"]) then
+            return { chips = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Bewitched Joker
+
+SMODS.Joker {
+    key = "bewitched",
+    atlas = "HandJokers",
+    pos = { x = 0, y = 0 },
+    config = { extra = { bonus = 12 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_spell"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_spell"]) then
+            return { mult = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Enchanted Joker
+
+SMODS.Joker {
+    key = "enchanted",
+    atlas = "HandJokers",
+    pos = { x = 0, y = 1 },
+    config = { extra = { bonus = 80 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_spell"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_spell"]) then
+            return { chips = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Spellbound Joker
+
+SMODS.Joker {
+    key = "spellbound",
+    atlas = "HandJokers",
+    pos = { x = 4, y = 0 },
+    config = { extra = { bonus = 16 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_cauldron"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_cauldron"]) then
+            return { mult = card.ability.extra.bonus }
+        end
+    end,
+}
+
+
+-- Hexed Joker
+
+SMODS.Joker {
+    key = "hexed",
+    atlas = "HandJokers",
+    pos = { x = 4, y = 1 },
+    config = { extra = { bonus = 120 } },
+    rarity = 1,
+    cost = 4,
+    blueprint_compat = true,
+    unlocked = true,
+    discovered = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    demicolon_compat = true,
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.bonus } }
+    end,
+
+    in_pool = function(self, args)
+        return G.GAME.hands["vegasstuff_cauldron"].played > 0
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main
+            and context.poker_hands ~= nil
+            and next(context.poker_hands["vegasstuff_cauldron"]) then
+            return { chips = card.ability.extra.bonus }
+        end
+    end,
+}
+
+-- SUIT JOKERS
+
+-- Bloodthirsty Joker
+
+
+SMODS.Joker {
+    key = "bloodthirsty",
+    atlas = "SuitJokers",
+    pos = { x = 0, y = 0 },
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 5,
+
+    config = {
+        extra = {
+            s_mult = 3,
+            suit = "vegasstuff_Swords"
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.s_mult,
+                localize(card.ability.extra.suit, "suits_singular"),
+                colours = {
+                    G.C.SUITS[card.ability.extra.suit]
+                }
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                mult = card.ability.extra.s_mult
+            }
+        end
+    end,
+}
+
+
+-- Drunken Joker
+
+SMODS.Joker {
+    key = "drunken",
+    atlas = "SuitJokers",
+    pos = { x = 1, y = 0 },
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 5,
+
+    config = {
+        extra = {
+            s_mult = 3,
+            suit = "vegasstuff_Cups"
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.s_mult,
+                localize(card.ability.extra.suit, "suits_singular"),
+                colours = {
+                    G.C.SUITS[card.ability.extra.suit]
+                }
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                mult = card.ability.extra.s_mult
+            }
+        end
+    end,
+}
+
+
+-- Covetous Joker
+
+SMODS.Joker {
+    key = "covetous",
+    atlas = "SuitJokers",
+    pos = { x = 2, y = 0 },
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 5,
+
+    config = {
+        extra = {
+            s_mult = 3,
+            suit = "vegasstuff_Pentacles"
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.s_mult,
+                localize(card.ability.extra.suit, "suits_singular"),
+                colours = {
+                    G.C.SUITS[card.ability.extra.suit]
+                }
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                mult = card.ability.extra.s_mult
+            }
+        end
+    end,
+}
+
+
+-- Zealous Joker
+
+SMODS.Joker {
+    key = "zealous",
+    atlas = "SuitJokers",
+    pos = { x = 3, y = 0 },
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 5,
+
+    config = {
+        extra = {
+            s_mult = 3,
+            suit = "vegasstuff_Wands"
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.s_mult,
+                localize(card.ability.extra.suit, "suits_singular"),
+                colours = {
+                    G.C.SUITS[card.ability.extra.suit]
+                }
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                mult = card.ability.extra.s_mult
+            }
+        end
+    end,
+}
+
+-- Cinnabar
+
+SMODS.Joker {
+    key = "cinnabar",
+    atlas = "SuitJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 7,
+
+    config = {
+        extra = {
+            numerator = 1,
+            denominator = 2,
+            xmult = 1.5,
+            suit = "vegasstuff_Swords"
+        }
+    },
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit)
+            and SMODS.pseudorandom_probability(
+                card,
+                "vegasstuff_cinnabar",
+                card.ability.extra.numerator,
+                card.ability.extra.denominator
+            ) then
+
+            return {
+                xmult = card.ability.extra.xmult
+            }
+        end
+    end,
+}
+
+
+-- Aquamarine
+
+SMODS.Joker {
+    key = "aquamarine",
+    atlas = "SuitJokers",
+    pos = { x = 1, y = 1 },
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 7,
+
+    config = {
+        extra = {
+            chips = 50,
+            suit = "vegasstuff_Cups"
+        }
+    },
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                chips = card.ability.extra.chips
+            }
+        end
+    end,
+}
+
+
+-- Sunstone
+
+SMODS.Joker {
+    key = "sunstone",
+    atlas = "SuitJokers",
+    pos = { x = 2, y = 1 },
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 7,
+
+    config = {
+        extra = {
+            dollars = 1,
+            suit = "vegasstuff_Pentacles"
+        }
+    },
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                dollars = card.ability.extra.dollars
+            }
+        end
+    end,
+}
+
+
+-- Amethyst
+
+SMODS.Joker {
+    key = "amethyst",
+    atlas = "SuitJokers",
+    pos = { x = 3, y = 1 },
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    cost = 7,
+
+    config = {
+        extra = {
+            mult = 7,
+            suit = "vegasstuff_Wands"
+        }
+    },
+
+    calculate = function(self, card, context)
+        if context.individual
+            and context.cardarea == G.play
+            and context.other_card:is_suit(card.ability.extra.suit) then
+
+            return {
+                mult = card.ability.extra.mult
+            }
+        end
+    end,
+}
+
+-- Pesterchum Chat Client
+
+SMODS.Joker {
+    key = "pesterchum",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 0 },
+    rarity = 3,
+    cost = 8,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+
+    config = {
+        extra = {
+            xchips = 1.20
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.xchips
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.other_joker then
+            local name = localize({
+                type = "name_text",
+                set = "Joker",
+                key = context.other_joker.config.center.key
+            })
+
+            if name and name:find("%f[%w]Joker%f[%W]") then
+                return {
+                    xchips = card.ability.extra.xchips
+                }
+            end
+        end
+    end,
+
+}

@@ -14,10 +14,39 @@ SMODS.ObjectType({
 })
 
 SMODS.ObjectType({
+
     key = "vegasstuff_mycustom_jokers",
+
     cards = {
         ["j_vegasstuff_theseized"] = true,
-        ["j_vegasstuff_vega"] = true
+        ["j_vegasstuff_vega"] = true,
+
+        -- Hand Jokers
+        ["j_vegasstuff_posted"] = true,
+        ["j_vegasstuff_publicized"] = true,
+        ["j_vegasstuff_caught"] = true,
+        ["j_vegasstuff_captured"] = true,
+        ["j_vegasstuff_clean"] = true,
+        ["j_vegasstuff_fresh"] = true,
+        ["j_vegasstuff_bewitched"] = true,
+        ["j_vegasstuff_enchanted"] = true,
+        ["j_vegasstuff_spellbound"] = true,
+        ["j_vegasstuff_hexed"] = true,
+
+        -- Suit Jokers
+        ["j_vegasstuff_bloodthirsty"] = true,
+        ["j_vegasstuff_drunken"] = true,
+        ["j_vegasstuff_covetous"] = true,
+        ["j_vegasstuff_zealous"] = true,
+
+        ["j_vegasstuff_cinnabar"] = true,
+        ["j_vegasstuff_aquamarine"] = true,
+        ["j_vegasstuff_sunstone"] = true,
+        ["j_vegasstuff_amethyst"] = true,
+
+        -- Misc Jokers
+        ["j_vegasstuff_pesterchum"] = true,
     },
+
 })
 
