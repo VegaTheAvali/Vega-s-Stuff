@@ -1,3 +1,4 @@
+
 SMODS.ConsumableType {
     key = 'zodiac',
     primary_colour = HEX('a600f9'),
@@ -60,53 +61,16 @@ local GEOMANCY_UPGRADES = {
     "jupiter",
 }
 
-local function singularity_level()
-    if not (G and G.GAME) then
-        return 0
-    end
-
-    return Vegasstuff.safe_int(
-        G.GAME.vegasstuff_singularity_level,
-        0
-    )
-end
-
 local function geomancy_max_level(extra)
-    return Vegasstuff.safe_int(extra and extra.max_level, 0)
-        + singularity_level()
-end
-
-local function with_geomancy_max_level(self, callback)
-    local extra = self and self.config and self.config.extra
-
-    if not extra or extra.tracker_key == "singularity" then
-        return callback()
-    end
-
-    local original_max = extra.max_level
-    extra.max_level = geomancy_max_level(extra)
-
-    local ok, result, secondary = pcall(callback)
-
-    extra.max_level = original_max
-
-    if not ok then
-        error(result)
-    end
-
-    return result, secondary
+    return Vegasstuff.get_geomancy_max_level_from_extra(extra)
 end
 
 local function can_spawn_geomancy(self, args)
-    return with_geomancy_max_level(self, function()
-        return Vegasstuff.can_spawn_geomancy_card(self, args)
-    end)
+    return Vegasstuff.can_spawn_geomancy_card(self, args)
 end
 
 local function geomancy_can_use(self)
-    return with_geomancy_max_level(self, function()
-        return Vegasstuff.geomancy_can_use(self)
-    end)
+    return Vegasstuff.geomancy_can_use(self)
 end
 
 local function has_reached_base_geomancy_cap()
@@ -135,9 +99,8 @@ local function count_maxed_geomancy()
 
     for _, key in ipairs(GEOMANCY_UPGRADES) do
         local center = G.P_CENTERS["c_vegasstuff_" .. key]
-        local extra = center and center.config and center.config.extra
 
-        if extra and Vegasstuff.get_geomancy_level(key) >= geomancy_max_level(extra) then
+        if center and Vegasstuff.get_geomancy_level(key) >= Vegasstuff.get_geomancy_max_level(center) then
             count = count + 1
         end
     end
@@ -1014,7 +977,9 @@ SMODS.Consumable {
 
     config = {
         extra = {
-            max_level = 10
+            max_level = 10,
+            tracker_key = "singularity",
+            fallback_center_key = "c_vegasstuff_singularity"
         }
     },
 
@@ -1036,31 +1001,30 @@ SMODS.Consumable {
 
     in_pool = function(self)
         return has_reached_base_geomancy_cap()
-            and singularity_level() < self.config.extra.max_level
+            and Vegasstuff.get_singularity_level() < self.config.extra.max_level
     end,
 
     loc_vars = function(self)
         return {
             vars = {
-                singularity_level(),
+                Vegasstuff.get_singularity_level(),
                 self.config.extra.max_level
             }
         }
     end,
 
     can_use = function(self)
-        return singularity_level() < self.config.extra.max_level
+        return Vegasstuff.get_singularity_level() < self.config.extra.max_level
     end,
 
     use = function(self, card, area, copier)
-        local level = singularity_level()
+        local level = Vegasstuff.get_singularity_level()
 
         if level >= self.config.extra.max_level then
             return
         end
 
-        G.GAME.vegasstuff_singularity_level = level + 1
-
+        Vegasstuff.set_singularity_level(level + 1)
         Vegasstuff.juice_and_status(
             copier or card,
             localize("k_vegasstuff_max_level"),
@@ -1076,7 +1040,8 @@ SMODS.Consumable {
     set = "geomancy",
 
     atlas = "GeomancyCards",
-    pos = { x = 2, y = 2 },
+    pos = { x = 7, y = 2 },
+    soul_pos = { x = 8, y = 2 },
 
     cost = 3,
     unlocked = true,

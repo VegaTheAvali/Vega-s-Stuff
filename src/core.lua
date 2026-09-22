@@ -20,7 +20,8 @@ local VEGASSTUFF_GEOMANCY_MAX_LEVELS = {
     mercurius = 9,
     saturnus = 4,
     uranus = 4,
-    jupiter = 5
+    jupiter = 5,
+    singularity = 10
 }
 
 local VEGASSTUFF_GEOMANCY_LEGACY_LEVELS = {
@@ -46,6 +47,45 @@ function Vegasstuff.geomancy_tracker_key(source)
     end
 
     return key
+end
+
+function Vegasstuff.get_singularity_level()
+    if not (G and G.GAME) then
+        return 0
+    end
+
+    G.GAME.vegasstuff_geomancy_levels =
+        G.GAME.vegasstuff_geomancy_levels or {}
+
+    return Vegasstuff.safe_int(
+        G.GAME.vegasstuff_geomancy_levels.singularity,
+        0
+    )
+end
+
+function Vegasstuff.set_singularity_level(level)
+    if not (G and G.GAME) then
+        return
+    end
+
+    G.GAME.vegasstuff_geomancy_levels =
+        G.GAME.vegasstuff_geomancy_levels or {}
+
+    G.GAME.vegasstuff_geomancy_levels.singularity =
+        math.min(10, Vegasstuff.safe_int(level, 0))
+end
+
+function Vegasstuff.get_geomancy_max_level_from_extra(extra)
+    local max_level = Vegasstuff.safe_int(
+        extra and extra.max_level,
+        20
+    )
+
+    if not extra or extra.tracker_key == "singularity" then
+        return max_level
+    end
+
+    return max_level + Vegasstuff.get_singularity_level()
 end
 
 function Vegasstuff.safe_int(value, fallback)
@@ -90,6 +130,10 @@ function Vegasstuff.get_geomancy_level(key)
         return 0
     end
 
+    if key == "singularity" then
+        return Vegasstuff.get_singularity_level()
+    end
+
     local levels = G.GAME.vegasstuff_geomancy_levels or {}
     local usage = (G.GAME.consumeable_usage and G.GAME.consumeable_usage["c_vegasstuff_" .. key]) or {}
     local legacy_key = VEGASSTUFF_GEOMANCY_LEGACY_LEVELS[key]
@@ -106,16 +150,33 @@ function Vegasstuff.get_geomancy_level_from_extra(extra)
         return 0
     end
 
-    G.GAME.vegasstuff_geomancy_levels = G.GAME.vegasstuff_geomancy_levels or {}
-    local tracked_level = G.GAME.vegasstuff_geomancy_levels[extra.tracker_key]
+    if extra.tracker_key == "singularity" then
+        return Vegasstuff.get_singularity_level()
+    end
+
+    G.GAME.vegasstuff_geomancy_levels =
+        G.GAME.vegasstuff_geomancy_levels or {}
+
+    local tracked_level =
+        G.GAME.vegasstuff_geomancy_levels[extra.tracker_key]
 
     if tracked_level == nil then
-        local usage = (G.GAME.consumeable_usage and G.GAME.consumeable_usage[extra.fallback_center_key]) or {}
+        local usage =
+            (G.GAME.consumeable_usage
+            and G.GAME.consumeable_usage[extra.fallback_center_key])
+            or {}
+
         tracked_level = usage.count or 0
     end
 
-    tracked_level = math.min(Vegasstuff.safe_int(extra.max_level, 20), Vegasstuff.safe_int(tracked_level, 0))
-    G.GAME.vegasstuff_geomancy_levels[extra.tracker_key] = tracked_level
+    tracked_level = math.min(
+        Vegasstuff.get_geomancy_max_level_from_extra(extra),
+        Vegasstuff.safe_int(tracked_level, 0)
+    )
+
+    G.GAME.vegasstuff_geomancy_levels[extra.tracker_key] =
+        tracked_level
+
     return tracked_level
 end
 
@@ -124,19 +185,45 @@ function Vegasstuff.set_geomancy_level_from_extra(extra, level)
         return
     end
 
-    G.GAME.vegasstuff_geomancy_levels = G.GAME.vegasstuff_geomancy_levels or {}
-    G.GAME.vegasstuff_geomancy_levels[extra.tracker_key] = math.min(
-        Vegasstuff.safe_int(extra.max_level, 20),
-        Vegasstuff.safe_int(level, 0)
-    )
+    if extra.tracker_key == "singularity" then
+        Vegasstuff.set_singularity_level(level)
+        return
+    end
+
+    G.GAME.vegasstuff_geomancy_levels =
+        G.GAME.vegasstuff_geomancy_levels or {}
+
+    G.GAME.vegasstuff_geomancy_levels[extra.tracker_key] =
+        math.min(
+            Vegasstuff.get_geomancy_max_level_from_extra(extra),
+            Vegasstuff.safe_int(level, 0)
+        )
 end
 
 function Vegasstuff.get_geomancy_max_level(center)
-    if center and center.config and center.config.extra and center.config.extra.max_level then
-        return Vegasstuff.safe_int(center.config.extra.max_level, 0)
+    local max_level
+
+    if center
+        and center.config
+        and center.config.extra
+        and center.config.extra.max_level then
+
+        max_level = Vegasstuff.safe_int(
+            center.config.extra.max_level,
+            0
+        )
+    else
+        max_level =
+            VEGASSTUFF_GEOMANCY_MAX_LEVELS[
+                Vegasstuff.geomancy_tracker_key(center)
+            ] or 20
     end
 
-    return VEGASSTUFF_GEOMANCY_MAX_LEVELS[Vegasstuff.geomancy_tracker_key(center)] or 20
+    if Vegasstuff.geomancy_tracker_key(center) ~= "singularity" then
+        max_level = max_level + Vegasstuff.get_singularity_level()
+    end
+
+    return max_level
 end
 
 function Vegasstuff.can_spawn_geomancy_card(center, opts)
@@ -177,7 +264,8 @@ function Vegasstuff.scaled_geomancy_value(value)
 end
 
 function Vegasstuff.geomancy_can_use(center)
-    return Vegasstuff.get_geomancy_level_from_extra(center.config.extra) < Vegasstuff.safe_int(center.config.extra.max_level, 20)
+    return Vegasstuff.get_geomancy_level_from_extra(center.config.extra)
+        < Vegasstuff.get_geomancy_max_level_from_extra(center.config.extra)
 end
 
 function Vegasstuff.tiered_geomancy_gain(extra, level)
