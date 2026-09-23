@@ -935,20 +935,45 @@ SMODS.Joker {
         }
     end,
 
-    calculate = function(self, card, context)
-        if context.before and not context.blueprint then
-            local tarot_suited = {}
+calculate = function(self, card, context)
+    if context.before and not context.blueprint then
+        local drank = {}
 
-            for _, scored_card in ipairs(context.scoring_hand) do
+        for _, scored_card in ipairs(context.scoring_hand) do
+            if not scored_card.debuff
+                and not scored_card.rainbow_drank then
+
+                local enhancement = scored_card.config
+                    and scored_card.config.center
+
+                local any_suit_enhancement =
+                    enhancement
+                    and enhancement.set == "Enhanced"
+                    and enhancement.any_suit
+
                 local normal_suit =
                     scored_card.base
                     and RAINBOW_DRINKER_SUITS[scored_card.base.suit]
 
-                if normal_suit
-                    and not scored_card.debuff
-                    and not scored_card.rainbow_drank then
+                -- Wild / any-suit Enhancements are consumed first.
+                -- The card's base suit is left completely untouched.
+                if any_suit_enhancement then
+                    drank[#drank + 1] = scored_card
+                    scored_card.rainbow_drank = true
 
-                    tarot_suited[#tarot_suited + 1] = scored_card
+                    scored_card:set_ability('c_base', nil, true)
+
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            scored_card:juice_up()
+                            scored_card.rainbow_drank = nil
+                            return true
+                        end
+                    }))
+
+                -- Otherwise, consume a Tarot suit normally.
+                elseif normal_suit then
+                    drank[#drank + 1] = scored_card
                     scored_card.rainbow_drank = true
 
                     SMODS.change_base(scored_card, normal_suit)
@@ -962,27 +987,28 @@ SMODS.Joker {
                     }))
                 end
             end
-
-            if #tarot_suited > 0 then
-                card.ability.extra.Xmult =
-                    card.ability.extra.Xmult
-                    + card.ability.extra.Xmult_gain * #tarot_suited
-
-                return {
-                    message = localize {
-                        type = 'variable',
-                        key = 'a_xmult',
-                        vars = { card.ability.extra.Xmult }
-                    },
-                    colour = G.C.MULT
-                }
-            end
         end
 
-        if context.joker_main then
+        if #drank > 0 then
+            card.ability.extra.Xmult =
+                card.ability.extra.Xmult
+                + card.ability.extra.Xmult_gain * #drank
+
             return {
-                xmult = card.ability.extra.Xmult
+                message = localize {
+                    type = 'variable',
+                    key = 'a_xmult',
+                    vars = { card.ability.extra.Xmult }
+                },
+                colour = G.C.MULT
             }
         end
-    end,
+    end
+
+    if context.joker_main then
+        return {
+            xmult = card.ability.extra.Xmult
+        }
+    end
+end,
 }
