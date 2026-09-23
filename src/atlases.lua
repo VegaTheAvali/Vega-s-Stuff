@@ -8,6 +8,15 @@ local function atlas(key, path, px, py)
     })
 end
 
+SMODS.Atlas({
+    key = "BossBlinds",
+    path = "BossBlinds.png",
+    px = 34,
+    py = 34,
+    frames = 21,
+    atlas_table = "ANIMATION_ATLAS"
+})
+
 atlas("modicon", "ModIcon.png", 34, 34)
 SMODS.Atlas({
     key = "balatro",

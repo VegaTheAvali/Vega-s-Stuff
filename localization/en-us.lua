@@ -17,6 +17,78 @@ return {
                 },
             },
         },
+        Blind = {
+            bl_vegasstuff_deja_vu_dream = {
+                name = "The Deja Vu Dream",
+                text = {
+                    "Selecting a card forces that card",
+                    "and all other selected cards",
+                    "to become their",
+                    "{C:tarot}Tarot{} counterparts,",
+                    "and vice versa",
+                    "Swap suits again on play",
+                },
+            },
+            bl_vegasstuff_water_web = {
+                name = "The Water Web",
+                text = {
+                    "Lose {C:money}$1{} per",
+                    "{C:vegasstuff_geomancy}Geomancy{} level",
+                    "when this Blind is selected",
+                },
+            },
+            bl_vegasstuff_broken_break = {
+                name = "The Broken Break",
+                text = {
+                    "Scored {C:attention}Enhanced{} cards",
+                    "are destroyed",
+                },
+            },
+            bl_vegasstuff_the = {
+                name = "The",
+                text = {
+                    "{C:inactive}???{}",
+                },
+            },
+            bl_vegasstuff_eclipse_east = {
+                name = "The Eclipse East",
+                text = {
+                    "If a {C:clubs}Club{} is played,",
+                    "increase Blind requirement",
+                    "by {C:attention}5%{} of base size",
+                },
+            },
+            bl_vegasstuff_wham_west = {
+                name = "The Wham West",
+                text = {
+                    "If a {C:spades}Spade{} is played,",
+                    "increase Blind requirement",
+                    "by {C:attention}5%{} of base size",
+                },
+            },
+            bl_vegasstuff_sade_south = {
+                name = "The Sade South",
+                text = {
+                    "If a {C:diamonds}Diamond{} is played,",
+                    "increase Blind requirement",
+                    "by {C:attention}5%{} of base size",
+                },
+            },
+            bl_vegasstuff_neon_north = {
+                name = "The Neon North",
+                text = {
+                    "If a {C:hearts}Heart{} is played,",
+                    "increase Blind requirement",
+                    "by {C:attention}5%{} of base size",
+                },
+            },
+            bl_vegasstuff_test1 = {
+                name = "The Omega Ox",
+                text = {
+                    "{C:inactive}nil{}",
+                },
+            },
+        },
         Joker = {
             j_vegasstuff_theseized = {
                 name = "The Seized",

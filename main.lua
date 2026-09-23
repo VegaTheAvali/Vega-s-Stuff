@@ -26,4 +26,5 @@ assert(SMODS.load_file("src/compat/partner.lua"))()
 assert(SMODS.load_file("src/optional_features.lua"))()
 assert(SMODS.load_file("src/pokerhands.lua"))()
 assert(SMODS.load_file("src/tarots.lua"))()
+assert(SMODS.load_file("src/blinds.lua"))()
 
