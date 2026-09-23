@@ -277,6 +277,15 @@ return {
                     "{X:chips,C:white}X#1#{} Chips",
                 },
             },
+            j_vegasstuff_rainbow_drinker = {
+            name = "Rainbow Drinker",
+            text = {
+                "This Joker gains {X:mult,C:white}X#1#{} Mult",
+                "per scoring {C:attention}Tarot-suited{} card played,",
+                "reverts card to its {C:attention}normal suit{}",
+                "{C:inactive}(Currently {X:mult,C:white}X#2#{} {C:inactive}Mult){}",
+            },
+        },
 
         },
         Enhanced = {

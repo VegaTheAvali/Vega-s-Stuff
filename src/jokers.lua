@@ -884,3 +884,105 @@ SMODS.Joker {
     end,
 
 }
+
+--[[
+There's a certain size comin' through your eyes
+Maybe just this once we can start a year off right
+'Cause I for one am hopin' for one more try
+Even if it's hard to pass the time
+
+That night it rained and I held you tight
+You kept pourin' more wine just to ease my mind
+Then you said you were just like a bird in a cage
+Morning came and we watched the rainbow fade
+
+I love you now as I loved you then
+But as time goes by I loosen my ties
+Still I'm hopin' for one more try
+Another chance to taste the rainbow wine
+]]
+
+local RAINBOW_DRINKER_SUITS = {
+    vegasstuff_Swords = "Spades",
+    vegasstuff_Cups = "Hearts",
+    vegasstuff_Wands = "Clubs",
+    vegasstuff_Pentacles = "Diamonds",
+}
+
+SMODS.Joker {
+    key = "rainbow_drinker",
+    blueprint_compat = true,
+    perishable_compat = false,
+    rarity = 2,
+    cost = 7,
+
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 0 },
+
+    config = {
+        extra = {
+            Xmult_gain = 0.1,
+            Xmult = 1
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                card.ability.extra.Xmult_gain,
+                card.ability.extra.Xmult
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.before and not context.blueprint then
+            local tarot_suited = {}
+
+            for _, scored_card in ipairs(context.scoring_hand) do
+                local normal_suit =
+                    scored_card.base
+                    and RAINBOW_DRINKER_SUITS[scored_card.base.suit]
+
+                if normal_suit
+                    and not scored_card.debuff
+                    and not scored_card.rainbow_drank then
+
+                    tarot_suited[#tarot_suited + 1] = scored_card
+                    scored_card.rainbow_drank = true
+
+                    SMODS.change_base(scored_card, normal_suit)
+
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            scored_card:juice_up()
+                            scored_card.rainbow_drank = nil
+                            return true
+                        end
+                    }))
+                end
+            end
+
+            if #tarot_suited > 0 then
+                card.ability.extra.Xmult =
+                    card.ability.extra.Xmult
+                    + card.ability.extra.Xmult_gain * #tarot_suited
+
+                return {
+                    message = localize {
+                        type = 'variable',
+                        key = 'a_xmult',
+                        vars = { card.ability.extra.Xmult }
+                    },
+                    colour = G.C.MULT
+                }
+            end
+        end
+
+        if context.joker_main then
+            return {
+                xmult = card.ability.extra.Xmult
+            }
+        end
+    end,
+}
