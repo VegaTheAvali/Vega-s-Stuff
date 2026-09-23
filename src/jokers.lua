@@ -7,6 +7,8 @@ local ALLOWED_SOURCES = {
     wra = true
 }
 
+
+
 SMODS.Joker {
     key = "theseized",
     
@@ -38,6 +40,105 @@ SMODS.Joker {
 }
 end
 
+
+
+
+local RAINBOW_DRINKER_SUITS = {
+    vegasstuff_Swords = "Spades",
+    vegasstuff_Cups = "Hearts",
+    vegasstuff_Wands = "Clubs",
+    vegasstuff_Pentacles = "Diamonds",
+}
+
+local function deck_has_tarot_suit(suit)
+    if not (G and G.playing_cards) then
+        return false
+    end
+
+    for _, playing_card in ipairs(G.playing_cards) do
+        local enhancement =
+            playing_card.config
+            and playing_card.config.center
+
+        local is_any_suit =
+            enhancement
+            and enhancement.set == "Enhanced"
+            and enhancement.any_suit
+
+        if (playing_card.base and playing_card.base.suit == suit)
+            or is_any_suit then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function deck_has_any_tarot_suit()
+    for tarot_suit, _ in pairs(RAINBOW_DRINKER_SUITS) do
+        if deck_has_tarot_suit(tarot_suit) then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function add_tarot_suit_tooltip(info_queue)
+    info_queue[#info_queue + 1] = {
+        key = "vegasstuff_tarot_suit_equivalents",
+        set = "Other",
+        vars = {
+            colours = {
+                G.C.SUITS["vegasstuff_Swords"],
+                G.C.SUITS["vegasstuff_Cups"],
+                G.C.SUITS["vegasstuff_Wands"],
+                G.C.SUITS["vegasstuff_Pentacles"],
+            }
+        }
+    }
+end
+
+local function swatched_active()
+    if not (G and G.jokers and G.jokers.cards) then
+        return false
+    end
+
+    for _, joker in ipairs(G.jokers.cards) do
+        if joker.config
+            and joker.config.center
+            and joker.config.center.key == "j_vegasstuff_swatched"
+            and not joker.debuff then
+            return true
+        end
+    end
+
+    return false
+end
+
+if not _G.vegasstuff_swatched_is_suit_hooked then
+    _G.vegasstuff_swatched_is_suit_hooked = true
+
+    local is_suit_ref = Card.is_suit
+
+    function Card:is_suit(suit, bypass_debuff, flush_calc)
+        if is_suit_ref(self, suit, bypass_debuff, flush_calc) then
+            return true
+        end
+
+        if swatched_active()
+            and self.base
+            and RAINBOW_DRINKER_SUITS[self.base.suit] == suit then
+            return true
+        end
+
+        return false
+    end
+end
+
+
+
+
 do
 local VEGA_THRESHOLD = 5
 local VEGA_DEFAULT_GEOMANCY_COUNT = 0
@@ -50,6 +151,7 @@ local VEGA_ALLOWED_SOURCES = {
     uta = true,
     wra = true
 }
+
 
 local function vega_normalize_gain(value, fallback)
     local gain = math.max(0, tonumber(value) or fallback)
@@ -550,6 +652,10 @@ SMODS.Joker {
         }
     },
 
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
+
     loc_vars = function(self, info_queue, card)
         return {
             vars = {
@@ -593,6 +699,10 @@ SMODS.Joker {
             suit = "vegasstuff_Cups"
         }
     },
+
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
 
     loc_vars = function(self, info_queue, card)
         return {
@@ -650,6 +760,10 @@ SMODS.Joker {
         }
     end,
 
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
+
     calculate = function(self, card, context)
         if context.individual
             and context.cardarea == G.play
@@ -681,6 +795,10 @@ SMODS.Joker {
             suit = "vegasstuff_Wands"
         }
     },
+
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
 
     loc_vars = function(self, info_queue, card)
         return {
@@ -727,6 +845,10 @@ SMODS.Joker {
         }
     },
 
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
+
     calculate = function(self, card, context)
         if context.individual
             and context.cardarea == G.play
@@ -765,6 +887,10 @@ SMODS.Joker {
         }
     },
 
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
+
     calculate = function(self, card, context)
         if context.individual
             and context.cardarea == G.play
@@ -797,6 +923,10 @@ SMODS.Joker {
         }
     },
 
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
+
     calculate = function(self, card, context)
         if context.individual
             and context.cardarea == G.play
@@ -828,6 +958,10 @@ SMODS.Joker {
             suit = "vegasstuff_Wands"
         }
     },
+
+      in_pool = function(self, args)
+        return deck_has_tarot_suit(self.config.extra.suit)
+    end,
 
     calculate = function(self, card, context)
         if context.individual
@@ -902,12 +1036,7 @@ Still I'm hopin' for one more try
 Another chance to taste the rainbow wine
 ]]
 
-local RAINBOW_DRINKER_SUITS = {
-    vegasstuff_Swords = "Spades",
-    vegasstuff_Cups = "Hearts",
-    vegasstuff_Wands = "Clubs",
-    vegasstuff_Pentacles = "Diamonds",
-}
+
 
 SMODS.Joker {
     key = "rainbow_drinker",
@@ -927,6 +1056,8 @@ SMODS.Joker {
     },
 
     loc_vars = function(self, info_queue, card)
+        add_tarot_suit_tooltip(info_queue)
+
         return {
             vars = {
                 card.ability.extra.Xmult_gain,
@@ -934,6 +1065,10 @@ SMODS.Joker {
             }
         }
     end,
+
+    in_pool = function(self, args)
+    return deck_has_any_tarot_suit()
+end,
 
 calculate = function(self, card, context)
     if context.before and not context.blueprint then
@@ -1010,5 +1145,26 @@ calculate = function(self, card, context)
             xmult = card.ability.extra.Xmult
         }
     end
+end,
+}
+
+SMODS.Joker {
+    key = "swatched",
+
+    rarity = 2,
+    cost = 7,
+
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 0 },
+
+    blueprint_compat = false,
+
+        loc_vars = function(self, info_queue, card)
+            add_tarot_suit_tooltip(info_queue)
+            return {}
+        end,
+
+        in_pool = function(self, args)
+    return deck_has_any_tarot_suit()
 end,
 }

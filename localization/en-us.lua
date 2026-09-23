@@ -286,6 +286,22 @@ return {
                 "{C:inactive}(Currently {X:mult,C:white}X#2#{} {C:inactive}Mult){}",
             },
         },
+        j_vegasstuff_swatched = {
+        name = "Swatched Joker",
+        text = {
+            "{C:attention}Tarot suits{} also count",
+            "as their corresponding",
+            "{C:attention}regular suits{}",
+        },
+    },
+        j_vegasstuff_swatched = {
+            name = "Swatched Joker",
+            text = {
+                "{C:attention}Tarot suits{} also count",
+                "as their corresponding",
+                "{C:attention}regular suits{}",
+            },
+        },
 
         },
         Enhanced = {
@@ -1310,7 +1326,16 @@ return {
                     "{C:green}guaranteed{}",
                 },
             },
-        },
+                vegasstuff_tarot_suit_equivalents = {
+                name = "Tarot Suit Equivalents",
+                text = {
+                    "{V:1}Swords{} = {C:spades}Spades{}",
+                    "{V:2}Cups{} = {C:hearts}Hearts{}",
+                    "{V:3}Wands{} = {C:clubs}Clubs{}",
+                    "{V:4}Pentacles{} = {C:diamonds}Diamonds{}",
+                },
+            },
+            },
         Stake = {
             stake_vegasstuff_stake = {
                 name = "Stake",
