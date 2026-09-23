@@ -925,6 +925,43 @@ return {
                 },
             },
         },
+        Tarot = {
+            c_vegasstuff_alcohol = {
+                name = "The Alcohol",
+                text = {
+                    "Converts up to",
+                    "{C:attention}#1#{} selected cards",
+                    "to {V:1}#2#{}",
+                },
+            },
+
+            c_vegasstuff_magic = {
+                name = "The Magic",
+                text = {
+                    "Converts up to",
+                    "{C:attention}#1#{} selected cards",
+                    "to {V:1}#2#{}",
+                },
+            },
+
+            c_vegasstuff_riches = {
+                name = "The Riches",
+                text = {
+                    "Converts up to",
+                    "{C:attention}#1#{} selected cards",
+                    "to {V:1}#2#{}",
+                },
+            },
+
+            c_vegasstuff_dummy = {
+                name = "The Dummy",
+                text = {
+                    "Converts up to",
+                    "{C:attention}#1#{} selected cards",
+                    "to {V:1}#2#{}",
+                },
+            },
+        },
         Voucher = {
             v_vegasstuff_geomancy_merchant = {
                 name = "Geomancy Merchant",

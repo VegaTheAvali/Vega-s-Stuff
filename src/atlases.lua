@@ -39,4 +39,5 @@ atlas("SuitsUIHC", "SuitsUIHC.png", 18, 18)
 atlas("HandJokers", "HandJokers.png", 71, 95)
 atlas("SuitJokers", "SuitJokers.png", 71, 95)
 atlas("MiscJokers", "MiscJokers.png", 71, 95)
--- =========================
+atlas("vega_tarot", "tarots.png", 71, 95)
+
