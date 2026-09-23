@@ -47,6 +47,15 @@ return {
             bl_vegasstuff_the = {
                 name = "The",
                 text = {
+                    "Copies the effects of",
+                    "{C:attention}#1#{} and",
+                    "{C:attention}#2#{}",
+                },
+            },
+
+            bl_vegasstuff_the_collection = {
+                name = "The",
+                text = {
                     "{C:inactive}???{}",
                 },
             },

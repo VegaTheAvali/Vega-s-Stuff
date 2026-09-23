@@ -14,6 +14,94 @@ local DEJA_VU_SUITS = {
     vegasstuff_Swords = "Spades",
 }
 
+local THE_VANILLA_BLINDS = {
+    "bl_hook",
+    "bl_ox",
+    "bl_house",
+    "bl_wall",
+    "bl_wheel",
+    "bl_arm",
+    "bl_club",
+    "bl_fish",
+    "bl_psychic",
+    "bl_goad",
+    "bl_water",
+    "bl_window",
+    "bl_manacle",
+    "bl_eye",
+    "bl_mouth",
+    "bl_plant",
+    "bl_serpent",
+    "bl_pillar",
+    "bl_head",
+    "bl_tooth",
+    "bl_flint",
+    "bl_mark",
+}
+
+-- Needle and other Showdown Blinds are not included. 
+
+
+local function generate_the_copies()
+    local pool = {}
+
+    for _, key in ipairs(THE_VANILLA_BLINDS) do
+        pool[#pool + 1] = key
+    end
+
+    local first = pseudorandom_element(
+        pool,
+        pseudoseed("vegasstuff_the_first")
+    )
+
+    for i = #pool, 1, -1 do
+        if pool[i] == first then
+            table.remove(pool, i)
+            break
+        end
+    end
+
+    local second = pseudorandom_element(
+        pool,
+        pseudoseed("vegasstuff_the_second")
+    )
+
+    return { first, second }
+end
+
+
+local function get_the_copies()
+    if not (G and G.GAME) then
+        return nil
+    end
+
+    local ante =
+        G.GAME.round_resets
+        and G.GAME.round_resets.ante
+        or 0
+
+    if not G.GAME.vegasstuff_the_copies
+        or G.GAME.vegasstuff_the_copies_ante ~= ante then
+
+        G.GAME.vegasstuff_the_copies = generate_the_copies()
+        G.GAME.vegasstuff_the_copies_ante = ante
+    end
+
+    return G.GAME.vegasstuff_the_copies
+end
+
+
+local function blind_name(key)
+    if not key then
+        return "???"
+    end
+
+    return localize {
+        type = "name_text",
+        set = "Blind",
+        key = key
+    }
+end
 
 local function swap_deja_vu_suit(card)
     if not (card and card.base and card.base.suit) then
@@ -91,17 +179,19 @@ end
 
 
 local function increase_blind_for_suit(suit)
-    if not (G and G.GAME and G.GAME.blind and G.play) then
+    if not (G and G.GAME and G.GAME.blind and G.hand) then
         return
     end
 
     local blind = G.GAME.blind
+    blind.effect = blind.effect or {}
+
     blind.effect.vegasstuff_base_chips =
         blind.effect.vegasstuff_base_chips or blind.chips
 
     local count = 0
 
-    for _, card in ipairs(G.play.cards) do
+    for _, card in ipairs(G.hand.highlighted or {}) do
         if card:is_suit(suit) then
             count = count + 1
         end
@@ -120,7 +210,6 @@ local function increase_blind_for_suit(suit)
     blind:wiggle()
 end
 
-
 -- The Deja Vu Dream
 SMODS.Blind {
     key = "deja_vu_dream",
@@ -128,7 +217,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 0 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("D29A6C"),
@@ -145,19 +234,26 @@ SMODS.Blind {
         return false
     end,
 
-    press_play = function(self)
-        if not (G and G.play) then
-            return
-        end
+   press_play = function(self)
+    if not (G and G.GAME and G.GAME.blind and G.hand) then
+        return
+    end
 
-        for _, card in ipairs(G.play.cards) do
-            swap_deja_vu_suit(card)
-        end
+    local blind = G.GAME.blind
+    local cards = G.hand.highlighted or {}
 
-        G.GAME.blind.effect.vegasstuff_deja_selected = {}
-        G.GAME.blind.triggered = true
-        G.GAME.blind:wiggle()
-    end,
+    if #cards <= 0 then
+        return
+    end
+
+    for _, card in ipairs(cards) do
+        swap_deja_vu_suit(card)
+    end
+
+    blind.effect.vegasstuff_deja_selected = {}
+    blind.triggered = true
+    blind:wiggle()
+end,
 }
 
 
@@ -168,7 +264,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 1 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("76CAD8"),
@@ -193,7 +289,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 2 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("829195"),
@@ -215,23 +311,47 @@ SMODS.Blind {
 }
 
 
--- The
 SMODS.Blind {
     key = "the",
 
     atlas = "BossBlinds",
     pos = { x = 0, y = 3 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("11191C"),
 
-    in_pool = function(self)
-        return false
+    get_copied_blinds = function(self, current_blind)
+        return get_the_copies() or {}
+    end,
+
+    loc_vars = function(self)
+        local copies = get_the_copies()
+
+        if copies then
+            return {
+                vars = {
+                    blind_name(copies[1]),
+                    blind_name(copies[2])
+                }
+            }
+        end
+
+        return {
+            vars = {
+                "???",
+                "???"
+            }
+        }
+    end,
+
+    collection_loc_vars = function(self)
+        return {
+            key = "bl_vegasstuff_the_collection"
+        }
     end,
 }
-
 
 -- The Eclipse East
 SMODS.Blind {
