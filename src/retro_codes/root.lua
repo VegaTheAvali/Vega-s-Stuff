@@ -112,13 +112,14 @@ local function root_apply_card(card)
     card.ability.vegasstuff_rooted = true
     root_apply_memory(card)
 
-    if root_is_playing_card(card) then
-        card.ability.cry_rigged = true
-        card.ability.cry_global_sticker = true
-        if card.set_seal then
-            card:set_seal("Red", true, true)
-        end
-        card:set_edition({ polychrome = true }, true, true)
+  if root_is_playing_card(card) then
+    card:add_sticker("vegasstuff_retro_seed", true)
+
+    if card.set_seal then
+        card:set_seal("Red", true, true)
+    end
+
+    card:set_edition({ polychrome = true }, true, true)
         if card.set_debuff then
             card:set_debuff(false)
         else
