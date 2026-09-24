@@ -1335,6 +1335,15 @@ return {
                     "{V:4}Pentacles{} = {C:diamonds}Diamonds{}",
                 },
             },
+             vegasstuff_retro_seed = {
+                        name = "RETRO SEED",
+                        
+                        text = {
+                            "All {C:green}listed probabilities{}",
+                            "on this card",
+                            "are guaranteed",
+                        },
+                    },
             },
         Stake = {
             stake_vegasstuff_stake = {
@@ -1422,6 +1431,7 @@ return {
             vegasstuff_retrowave = "Neon Jackpot",
             vegasstuff_singularity_aquarium = "Singularity Aquarium",
             vegasstuff_supernova = "Supernova",
+            vegasstuff_retro_seed = "RETRO SEED",
         },
         suits_plural = {
             vegasstuff_Cups = "Chalices",

@@ -363,7 +363,7 @@ local function xchips_gain(extra)
 end
 
 local function total_xchips(level, extra)
-    return math.max(0, level) * xchips_gain(extra)
+    return xchips_gain(extra) ^ math.max(0, level)
 end
 
 local function apply_xchips_total(target_level, extra)
@@ -524,7 +524,7 @@ local function xmult_gain(extra)
 end
 
 local function total_xmult(level, extra)
-    return math.max(0, level) * xmult_gain(extra)
+    return xmult_gain(extra) ^ math.max(0, level)
 end
 
 local function apply_xmult_total(target_level, extra)
