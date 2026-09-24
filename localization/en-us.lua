@@ -294,14 +294,15 @@ return {
             "{C:attention}regular suits{}",
         },
     },
-        j_vegasstuff_swatched = {
-            name = "Swatched Joker",
-            text = {
-                "{C:attention}Tarot suits{} also count",
-                "as their corresponding",
-                "{C:attention}regular suits{}",
+            j_vegasstuff_lesser_blessed = {
+                name = "Lesser Blessed Joker",
+                text = {
+                    "Gives {X:chips,C:white}X#1#{} Chips per",
+                    "unique {C:attention}suit set{} in scoring hand",
+                    "{C:inactive}(Spades/Swords, Hearts/Cups,{}",
+                    "{C:inactive}Clubs/Wands, Diamonds/Pentacles){}",
+                },
             },
-        },
 
         },
         Enhanced = {

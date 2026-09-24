@@ -5,6 +5,14 @@ lenient_bignum = lenient_bignum or function(a) return a end
 _G.VegasStuff = _G.VegasStuff or {}
 Vegasstuff = _G.VegasStuff
 
+SMODS.current_mod.menu_cards = function()
+    return {
+        key = "j_vegasstuff_vega",
+        no_edition = true,
+        remove_original = true,
+    }
+end
+
 COLLAGE_MODIFIED_TABLE_MINOR = COLLAGE_MODIFIED_TABLE_MINOR or {}
 COLLAGE_MODIFIED_TABLE_MAJOR = COLLAGE_MODIFIED_TABLE_MAJOR or {}
 COLLAGE_MODIFIED_TABLE = COLLAGE_MODIFIED_TABLE or {}

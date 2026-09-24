@@ -1046,7 +1046,7 @@ SMODS.Joker {
     cost = 7,
 
     atlas = "MiscJokers",
-    pos = { x = 0, y = 0 },
+    pos = { x = 2, y = 0 },
 
     config = {
         extra = {
@@ -1155,7 +1155,7 @@ SMODS.Joker {
     cost = 7,
 
     atlas = "MiscJokers",
-    pos = { x = 0, y = 0 },
+    pos = { x = 3, y = 0 },
 
     blueprint_compat = false,
 
@@ -1167,4 +1167,85 @@ SMODS.Joker {
         in_pool = function(self, args)
     return deck_has_any_tarot_suit()
 end,
+}
+
+SMODS.Joker {
+    key = "lesser_blessed",
+    rarity = 2,
+    cost = 7,
+
+    atlas = "MiscJokers",
+    pos = { x = 4, y = 0 },
+
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+
+    config = {
+        extra = {
+            xchips_per_suit = 0.25
+        }
+    },
+
+    loc_vars = function(self, info_queue, card)
+        add_tarot_suit_tooltip(info_queue)
+
+        return {
+            vars = {
+                card.ability.extra.xchips_per_suit
+            }
+        }
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main and context.scoring_hand then
+            local suit_sets = {}
+
+            for _, scored_card in ipairs(context.scoring_hand) do
+                local enhancement =
+                    scored_card.config
+                    and scored_card.config.center
+
+                local any_suit =
+                    enhancement
+                    and enhancement.set == "Enhanced"
+                    and enhancement.any_suit
+
+                if any_suit then
+                    suit_sets.Spades = true
+                    suit_sets.Hearts = true
+                    suit_sets.Clubs = true
+                    suit_sets.Diamonds = true
+
+                elseif scored_card.base and scored_card.base.suit then
+                    local suit = scored_card.base.suit
+                    local regular_suit =
+                        RAINBOW_DRINKER_SUITS[suit]
+                        or suit
+
+                    if regular_suit == "Spades"
+                        or regular_suit == "Hearts"
+                        or regular_suit == "Clubs"
+                        or regular_suit == "Diamonds" then
+
+                        suit_sets[regular_suit] = true
+                    end
+                end
+            end
+
+            local unique_sets = 0
+
+            for _ in pairs(suit_sets) do
+                unique_sets = unique_sets + 1
+            end
+
+            if unique_sets > 0 then
+                return {
+                    xchips = 1
+                        + card.ability.extra.xchips_per_suit
+                        * unique_sets
+                }
+            end
+        end
+    end,
 }
