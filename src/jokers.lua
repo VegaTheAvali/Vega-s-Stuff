@@ -26,7 +26,7 @@ SMODS.Joker {
     eternal_compat = true,
     perishable_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     atlas = 'CustomJokers',
     dependencies = { "Cryptid", "Polterworx" },
     pools = { ["vegasstuff_mycustom_jokers"] = true },
@@ -220,7 +220,7 @@ SMODS.Joker {
     eternal_compat = true,
     perishable_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     atlas = 'CustomJokers',
     pools = { ["vegasstuff_mycustom_jokers"] = true },
     soul_pos = {
@@ -294,7 +294,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -332,7 +332,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -370,7 +370,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -404,7 +404,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -438,7 +438,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -472,7 +472,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -506,7 +506,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -540,7 +540,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -574,7 +574,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -608,7 +608,7 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = true,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     eternal_compat = true,
     perishable_compat = true,
     demicolon_compat = true,
@@ -643,6 +643,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 5,
 
     config = {
@@ -691,6 +692,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 5,
 
     config = {
@@ -739,6 +741,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 5,
 
     config = {
@@ -787,6 +790,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 5,
 
     config = {
@@ -834,6 +838,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 7,
 
     config = {
@@ -877,6 +882,7 @@ SMODS.Joker {
     rarity = 2,
     blueprint_compat = true,
     eternal_compat = true,
+    discovered = false,
     perishable_compat = true,
     cost = 7,
 
@@ -914,6 +920,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 7,
 
     config = {
@@ -950,6 +957,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
     cost = 7,
 
     config = {
@@ -986,6 +994,7 @@ SMODS.Joker {
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+    discovered = false,
 
     config = {
         extra = {
@@ -1156,7 +1165,7 @@ SMODS.Joker {
 
     atlas = "MiscJokers",
     pos = { x = 3, y = 0 },
-
+    discovered = false,
     blueprint_compat = false,
 
         loc_vars = function(self, info_queue, card)
@@ -1176,7 +1185,7 @@ SMODS.Joker {
 
     atlas = "MiscJokers",
     pos = { x = 4, y = 0 },
-
+    discovered = false,
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
