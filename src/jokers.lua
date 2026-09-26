@@ -283,351 +283,254 @@ end
 
 -- Hand Jokers. 
 
--- Posted Joker
+local function register_vega_hand_joker(args)
+    SMODS.Joker {
+        key = args.key,
 
-SMODS.Joker {
-    key = "posted",
-    atlas = "HandJokers",
-    pos = { x = 3, y = 0 },
-    config = { extra = { bonus = 15 } },
-    rarity = 1,
-    cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
+        atlas = "HandJokers",
+        pos = args.pos,
 
-    loc_vars = function(self, info_queue, card)
-        return {
-            vars = { card.ability.extra.bonus }
-        }
-    end,
+        rarity = args.rarity,
+        cost = args.cost,
 
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_postage"].played > 0
-    end,
+        unlocked = not args.locked,
+        discovered = false,
 
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_postage"]) then
+        blueprint_compat = true,
+        eternal_compat = true,
+        perishable_compat = true,
+        demicolon_compat = args.rarity == 1,
 
-            return {
-                mult = card.ability.extra.bonus
+        config = {
+            extra = {
+                value = args.value,
+                type = args.hand_type,
+                effect = args.effect
             }
-        end
-    end,
-}
+        },
 
--- Publicized Joker
-
-SMODS.Joker {
-    key = "publicized",
-    atlas = "HandJokers",
-    pos = { x = 3, y = 1 },
-    config = { extra = { bonus = 100 } },
-    rarity = 1,
-    cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
-
-    loc_vars = function(self, info_queue, card)
-        return {
-            vars = { card.ability.extra.bonus }
-        }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_postage"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_postage"]) then
-
+        loc_vars = function(self, info_queue, card)
             return {
-                chips = card.ability.extra.bonus
+                vars = {
+                    card.ability.extra.value,
+                    localize(card.ability.extra.type, "poker_hands")
+                }
             }
-        end
-    end,
-}
+        end,
 
--- Caught Joker
+        locked_loc_vars = function(self, info_queue, card)
+            return {
+                vars = {
+                    localize(self.config.extra.type, "poker_hands")
+                }
+            }
+        end,
 
-SMODS.Joker {
-    key = "caught",
-    atlas = "HandJokers",
-    pos = { x = 2, y = 0 },
-    config = { extra = { bonus = 13 } },
-    rarity = 1,
-    cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
+       in_pool = function(self, pool_args)
+    local hand =
+        G
+        and G.GAME
+        and G.GAME.hands
+        and G.GAME.hands[self.config.extra.type]
 
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
+    return hand
+        and hand.played
+        and hand.played > 0
+end,
 
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_package"].played > 0
-    end,
+        calculate = function(self, card, context)
+            if context.joker_main
+                and context.poker_hands
+                and context.poker_hands[card.ability.extra.type]
+                and next(context.poker_hands[card.ability.extra.type]) then
 
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_package"]) then
-            return { mult = card.ability.extra.bonus }
-        end
-    end,
-}
+                return {
+                    [card.ability.extra.effect] =
+                        card.ability.extra.value
+                }
+            end
+        end,
 
+        check_for_unlock = function(self, unlock_args)
+            if not args.locked then
+                return false
+            end
 
--- Captured Joker
+            local hand =
+                G
+                and G.GAME
+                and G.GAME.hands
+                and G.GAME.hands[self.config.extra.type]
 
-SMODS.Joker {
-    key = "captured",
-    atlas = "HandJokers",
-    pos = { x = 2, y = 1 },
-    config = { extra = { bonus = 90 } },
-    rarity = 1,
-    cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
+            return hand
+                and hand.played
+                and hand.played > 0
+        end,
+    }
+end
 
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_package"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_package"]) then
-            return { chips = card.ability.extra.bonus }
-        end
-    end,
-}
-
-
--- Clean Joker
-
-SMODS.Joker {
-    key = "clean",
-    atlas = "HandJokers",
-    pos = { x = 1, y = 0 },
-    config = { extra = { bonus = 14 } },
-    rarity = 1,
-    cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
-
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_mint"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_mint"]) then
-            return { mult = card.ability.extra.bonus }
-        end
-    end,
-}
-
-
--- Fresh Joker
-
-SMODS.Joker {
-    key = "fresh",
-    atlas = "HandJokers",
-    pos = { x = 1, y = 1 },
-    config = { extra = { bonus = 100 } },
-    rarity = 1,
-    cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
-
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_mint"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_mint"]) then
-            return { chips = card.ability.extra.bonus }
-        end
-    end,
-}
-
-
--- Bewitched Joker
-
-SMODS.Joker {
+--- Spell
+register_vega_hand_joker {
     key = "bewitched",
-    atlas = "HandJokers",
+    hand_type = "vegasstuff_spell",
     pos = { x = 0, y = 0 },
-    config = { extra = { bonus = 12 } },
     rarity = 1,
     cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
-
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_spell"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_spell"]) then
-            return { mult = card.ability.extra.bonus }
-        end
-    end,
+    effect = "mult",
+    value = 12
 }
 
-
--- Enchanted Joker
-
-SMODS.Joker {
+register_vega_hand_joker {
     key = "enchanted",
-    atlas = "HandJokers",
+    hand_type = "vegasstuff_spell",
     pos = { x = 0, y = 1 },
-    config = { extra = { bonus = 80 } },
     rarity = 1,
     cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
+    effect = "chips",
+    value = 80
+}
 
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_spell"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_spell"]) then
-            return { chips = card.ability.extra.bonus }
-        end
-    end,
+register_vega_hand_joker {
+    key = "summoned",
+    hand_type = "vegasstuff_spell",
+    pos = { x = 0, y = 2 },
+    rarity = 3,
+    cost = 8,
+    effect = "xmult",
+    value = 2,
+    locked = true
 }
 
 
--- Spellbound Joker
+-- Mint
+register_vega_hand_joker {
+    key = "clean",
+    hand_type = "vegasstuff_mint",
+    pos = { x = 1, y = 0 },
+    rarity = 1,
+    cost = 4,
+    effect = "mult",
+    value = 14
+}
 
-SMODS.Joker {
+register_vega_hand_joker {
+    key = "fresh",
+    hand_type = "vegasstuff_mint",
+    pos = { x = 1, y = 1 },
+    rarity = 1,
+    cost = 4,
+    effect = "chips",
+    value = 100
+}
+
+register_vega_hand_joker {
+    key = "refreshed",
+    hand_type = "vegasstuff_mint",
+    pos = { x = 1, y = 2 },
+    rarity = 3,
+    cost = 8,
+    effect = "xmult",
+    value = 2,
+    locked = true
+}
+
+
+-- Package
+register_vega_hand_joker {
+    key = "caught",
+    hand_type = "vegasstuff_package",
+    pos = { x = 2, y = 0 },
+    rarity = 1,
+    cost = 4,
+    effect = "mult",
+    value = 13
+}
+
+register_vega_hand_joker {
+    key = "captured",
+    hand_type = "vegasstuff_package",
+    pos = { x = 2, y = 1 },
+    rarity = 1,
+    cost = 4,
+    effect = "chips",
+    value = 90
+}
+
+register_vega_hand_joker {
+    key = "delivered",
+    hand_type = "vegasstuff_package",
+    pos = { x = 2, y = 2 },
+    rarity = 3,
+    cost = 8,
+    effect = "xmult",
+    value = 2,
+    locked = true
+}
+
+
+-- Postage
+register_vega_hand_joker {
+    key = "posted",
+    hand_type = "vegasstuff_postage",
+    pos = { x = 3, y = 0 },
+    rarity = 1,
+    cost = 4,
+    effect = "mult",
+    value = 15
+}
+
+register_vega_hand_joker {
+    key = "publicized",
+    hand_type = "vegasstuff_postage",
+    pos = { x = 3, y = 1 },
+    rarity = 1,
+    cost = 4,
+    effect = "chips",
+    value = 100
+}
+
+register_vega_hand_joker {
+    key = "office",
+    hand_type = "vegasstuff_postage",
+    pos = { x = 3, y = 2 },
+    rarity = 3,
+    cost = 8,
+    effect = "xmult",
+    value = 2,
+    locked = true
+}
+
+
+-- Cauldron
+register_vega_hand_joker {
     key = "spellbound",
-    atlas = "HandJokers",
+    hand_type = "vegasstuff_cauldron",
     pos = { x = 4, y = 0 },
-    config = { extra = { bonus = 16 } },
     rarity = 1,
     cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
-
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_cauldron"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_cauldron"]) then
-            return { mult = card.ability.extra.bonus }
-        end
-    end,
+    effect = "mult",
+    value = 16
 }
 
-
--- Hexed Joker
-
-SMODS.Joker {
+register_vega_hand_joker {
     key = "hexed",
-    atlas = "HandJokers",
+    hand_type = "vegasstuff_cauldron",
     pos = { x = 4, y = 1 },
-    config = { extra = { bonus = 120 } },
     rarity = 1,
     cost = 4,
-    blueprint_compat = true,
-    unlocked = true,
-    discovered = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    demicolon_compat = true,
+    effect = "chips",
+    value = 120
+}
 
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.bonus } }
-    end,
-
-    in_pool = function(self, args)
-        return G.GAME.hands["vegasstuff_cauldron"].played > 0
-    end,
-
-    calculate = function(self, card, context)
-        if context.joker_main
-            and context.poker_hands ~= nil
-            and next(context.poker_hands["vegasstuff_cauldron"]) then
-            return { chips = card.ability.extra.bonus }
-        end
-    end,
+register_vega_hand_joker {
+    key = "brewed",
+    hand_type = "vegasstuff_cauldron",
+    pos = { x = 4, y = 2 },
+    rarity = 3,
+    cost = 8,
+    effect = "xmult",
+    value = 2,
+    locked = true
 }
 
 -- SUIT JOKERS

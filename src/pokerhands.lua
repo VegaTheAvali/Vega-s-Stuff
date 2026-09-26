@@ -42,7 +42,7 @@ SMODS.Consumable {
 	key = "postage_temp",
 	config = { hand_type = "vegasstuff_postage", softlock = true },
 	pos = { x = 0, y = 0 },
-	atlas = "CustomJokers",
+	atlas = "PlaceholderPlanet",
 
 	process_loc_text = function(self)
     G.localization.descriptions[self.set][self.key] = {
@@ -96,7 +96,7 @@ SMODS.Consumable {
 	key = "package_temp",
 	config = { hand_type = "vegasstuff_package", softlock = true },
 	pos = { x = 0, y = 0 },
-	atlas = "CustomJokers",
+	atlas = "PlaceholderPlanet",
 
 	process_loc_text = function(self)
     G.localization.descriptions[self.set][self.key] = {
@@ -149,7 +149,7 @@ SMODS.Consumable {
 	key = "mint_temp",
 	config = { hand_type = "vegasstuff_mint", softlock = true },
 	pos = { x = 0, y = 0 },
-	atlas = "CustomJokers",
+	atlas = "PlaceholderPlanet",
 
 	process_loc_text = function(self)
     G.localization.descriptions[self.set][self.key] = {
@@ -202,7 +202,7 @@ SMODS.Consumable {
 	key = "spelltemp",
 	config = { hand_type = "vegasstuff_spell", softlock = true },
 	pos = { x = 0, y = 0 },
-	atlas = "CustomJokers",
+	atlas = "PlaceholderPlanet",
 
 	process_loc_text = function(self)
     G.localization.descriptions[self.set][self.key] = {
@@ -287,7 +287,7 @@ SMODS.Consumable {
 	key = "cauldron_temp",
 	config = { hand_type = "vegasstuff_cauldron", softlock = true },
 	pos = { x = 0, y = 0 },
-	atlas = "CustomJokers",
+	atlas = "PlaceholderPlanet",
 
 	process_loc_text = function(self)
     G.localization.descriptions[self.set][self.key] = {

@@ -202,6 +202,61 @@ return {
                 }
             },
 
+                        j_vegasstuff_summoned = {
+                name = "The Summoned",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult if played hand",
+                    "contains a {C:attention}#2#{}",
+                },
+                unlock = {
+                    "Play a {C:attention}#1#{}",
+                },
+            },
+
+            j_vegasstuff_refreshed = {
+                name = "The Refreshed",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult if played hand",
+                    "contains a {C:attention}#2#{}",
+                },
+                unlock = {
+                    "Play a {C:attention}#1#{}",
+                },
+            },
+
+            j_vegasstuff_delivered = {
+                name = "The Delivered",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult if played hand",
+                    "contains a {C:attention}#2#{}",
+                },
+                unlock = {
+                    "Play a {C:attention}#1#{}",
+                },
+            },
+
+            j_vegasstuff_office = {
+                name = "The Office",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult if played hand",
+                    "contains a {C:attention}#2#{}",
+                },
+                unlock = {
+                    "Play a {C:attention}#1#{}",
+                },
+            },
+
+            j_vegasstuff_brewed = {
+                name = "The Brewed",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult if played hand",
+                    "contains a {C:attention}#2#{}",
+                },
+                unlock = {
+                    "Play a {C:attention}#1#{}",
+                },
+            },
+
             -- SUIT JOKERS
 
                       j_vegasstuff_bloodthirsty = {
