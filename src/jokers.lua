@@ -43,13 +43,6 @@ end
 
 
 
-local RAINBOW_DRINKER_SUITS = {
-    vegasstuff_Swords = "Spades",
-    vegasstuff_Cups = "Hearts",
-    vegasstuff_Wands = "Clubs",
-    vegasstuff_Pentacles = "Diamonds",
-}
-
 local function deck_has_tarot_suit(suit)
     if not (G and G.playing_cards) then
         return false
@@ -75,7 +68,8 @@ local function deck_has_tarot_suit(suit)
 end
 
 local function deck_has_any_tarot_suit()
-    for tarot_suit, _ in pairs(RAINBOW_DRINKER_SUITS) do
+    for _, standard_suit in ipairs({ "Spades", "Hearts", "Clubs", "Diamonds" }) do
+        local tarot_suit = Vegasstuff.get_suit_equivalent(standard_suit, "tarot")
         if deck_has_tarot_suit(tarot_suit) then
             return true
         end
@@ -128,7 +122,7 @@ if not _G.vegasstuff_swatched_is_suit_hooked then
 
         if swatched_active()
             and self.base
-            and RAINBOW_DRINKER_SUITS[self.base.suit] == suit then
+            and Vegasstuff.get_suit_equivalent(self.base.suit, "standard") == suit then
             return true
         end
 
@@ -1000,7 +994,7 @@ calculate = function(self, card, context)
 
                 local normal_suit =
                     scored_card.base
-                    and RAINBOW_DRINKER_SUITS[scored_card.base.suit]
+                    and Vegasstuff.get_suit_equivalent(scored_card.base.suit, "standard")
 
                 -- Wild / any-suit Enhancements are consumed first.
                 -- The card's base suit is left completely untouched.
@@ -1132,7 +1126,7 @@ SMODS.Joker {
                 elseif scored_card.base and scored_card.base.suit then
                     local suit = scored_card.base.suit
                     local regular_suit =
-                        RAINBOW_DRINKER_SUITS[suit]
+                        Vegasstuff.get_suit_equivalent(suit, "standard")
                         or suit
 
                     if regular_suit == "Spades"

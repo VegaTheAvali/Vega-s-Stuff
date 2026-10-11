@@ -1,19 +1,5 @@
 -- Boss Blinds
 
-local DEJA_VU_SUITS = {
-    Hearts = "vegasstuff_Cups",
-    vegasstuff_Cups = "Hearts",
-
-    Clubs = "vegasstuff_Wands",
-    vegasstuff_Wands = "Clubs",
-
-    Diamonds = "vegasstuff_Pentacles",
-    vegasstuff_Pentacles = "Diamonds",
-
-    Spades = "vegasstuff_Swords",
-    vegasstuff_Swords = "Spades",
-}
-
 local THE_VANILLA_BLINDS = {
     "bl_hook",
     "bl_ox",
@@ -108,7 +94,7 @@ local function swap_deja_vu_suit(card)
         return
     end
 
-    local new_suit = DEJA_VU_SUITS[card.base.suit]
+    local new_suit = Vegasstuff.get_suit_equivalent(card.base.suit)
 
     if new_suit then
         SMODS.change_base(card, new_suit)

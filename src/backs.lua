@@ -271,3 +271,68 @@ SMODS.Back({
     end
 })
 end
+
+SMODS.Back {
+    key = "reversed",
+
+    atlas = "CustomDecks",
+    pos = { x = 2, y = 0 },
+
+    calculate = function(self, back, context)
+        if context.after and context.scoring_hand then
+            for _, scored_card in ipairs(context.scoring_hand) do
+                if scored_card.base then
+                    local new_suit =
+                        Vegasstuff.get_suit_equivalent(scored_card.base.suit)
+
+                    if new_suit then
+                        SMODS.change_base(scored_card, new_suit)
+
+                        if scored_card.juice_up then
+                            scored_card:juice_up(0.2, 0.2)
+                        end
+                    end
+                end
+            end
+        end
+    end,
+}
+
+SMODS.Back {
+    key = "minor_arcanist",
+
+    atlas = "CustomDecks",
+    pos = { x = 1, y = 0 },
+
+    loc_vars = function(self, info_queue, back)
+        return {
+            vars = {
+                colours = {
+                    G.C.SUITS["vegasstuff_Swords"],
+                    G.C.SUITS["vegasstuff_Cups"],
+                    G.C.SUITS["vegasstuff_Pentacles"],
+                    G.C.SUITS["vegasstuff_Wands"],
+                }
+            }
+        }
+    end,
+
+    apply = function(self, back)
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                for _, card in ipairs(G.playing_cards or {}) do
+                    if card.base then
+                        local tarot_suit =
+                            Vegasstuff.get_suit_equivalent(card.base.suit, "tarot")
+
+                        if tarot_suit then
+                            SMODS.change_base(card, tarot_suit)
+                        end
+                    end
+                end
+
+                return true
+            end
+        }))
+    end,
+}

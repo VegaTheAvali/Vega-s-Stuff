@@ -5,6 +5,29 @@ lenient_bignum = lenient_bignum or function(a) return a end
 _G.VegasStuff = _G.VegasStuff or {}
 Vegasstuff = _G.VegasStuff
 
+local STANDARD_TO_TAROT = {
+    Spades = "vegasstuff_Wands",
+    Hearts = "vegasstuff_Swords",
+    Clubs = "vegasstuff_Cups",
+    Diamonds = "vegasstuff_Pentacles",
+}
+
+local TAROT_TO_STANDARD = {}
+for standard_suit, tarot_suit in pairs(STANDARD_TO_TAROT) do
+    TAROT_TO_STANDARD[tarot_suit] = standard_suit
+end
+
+
+function Vegasstuff.get_suit_equivalent(suit, target)
+    if target == "tarot" then
+        return STANDARD_TO_TAROT[suit]
+    elseif target == "standard" then
+        return TAROT_TO_STANDARD[suit]
+    elseif target == nil then
+        return STANDARD_TO_TAROT[suit] or TAROT_TO_STANDARD[suit]
+    end
+end
+
 SMODS.current_mod.menu_cards = function()
     return {
         key = "j_vegasstuff_vega",

@@ -16,6 +16,20 @@ return {
                     "{C:attention}Astro Tags{} open free {C:vegasstuff_geomancy}Astro Packs{}",
                 },
             },
+            b_vegasstuff_reversed = {
+                name = "Reversed Deck",
+                text = {
+                    "Scored cards swap between",
+                    "their {C:attention}regular{} and {C:tarot}Tarot{} suits",
+                },
+            },
+            b_vegasstuff_minor_arcanist = {
+                name = "Minor Arcanist's Deck",
+                text = {
+                    "Start with a full set of",
+                    "{V:1}Swords{}, {V:2}Cups{}, {V:3}Pentacles{} and {V:4}Wands{}",
+                },
+            },
         },
         Blind = {
             bl_vegasstuff_deja_vu_dream = {
@@ -1385,9 +1399,9 @@ return {
                 vegasstuff_tarot_suit_equivalents = {
                 name = "Tarot Suit Equivalents",
                 text = {
-                    "{V:1}Swords{} = {C:spades}Spades{}",
-                    "{V:2}Cups{} = {C:hearts}Hearts{}",
-                    "{V:3}Wands{} = {C:clubs}Clubs{}",
+                    "{V:1}Swords{} = {C:hearts}Hearts{}",
+                    "{V:2}Cups{} = {C:clubs}Clubs{}",
+                    "{V:3}Wands{} = {C:spades}Spades{}",
                     "{V:4}Pentacles{} = {C:diamonds}Diamonds{}",
                 },
             },
