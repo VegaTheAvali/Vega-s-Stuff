@@ -31,7 +31,7 @@ end
 
 do
 local SOLAR_TAG_KEY = "tag_vegasstuff_astro"
-local SOLAR_CHOICES_SMALL_BIG = 3
+local SOLAR_CHOICES_SMALL_BIG = 2
 local SOLAR_CHOICES_BOSS = 5
 local SOLAR_RING_DRAW_SCALE = 0.18
 local unpack_fn = table.unpack or unpack
@@ -127,8 +127,8 @@ local function solar_set_blind_reward_tags()
         return
     end
     G.GAME.round_resets.blind_tags = G.GAME.round_resets.blind_tags or {}
-    G.GAME.round_resets.blind_tags.Small = SOLAR_TAG_KEY
-    G.GAME.round_resets.blind_tags.Big = SOLAR_TAG_KEY
+    G.GAME.round_resets.blind_tags.Small = "tag_vegasstuff_zodiac"
+    G.GAME.round_resets.blind_tags.Big = "tag_vegasstuff_zodiac"
     G.GAME.round_resets.blind_tags.Boss = SOLAR_TAG_KEY
 end
 
@@ -239,7 +239,9 @@ if not rawget(_G, "vegasstuff_solar_hooks_installed") then
         end
         reset_blinds()
         solar_set_blind_reward_tags()
-        add_tag(Tag(SOLAR_TAG_KEY))
+        local reward_tag = Tag(SOLAR_TAG_KEY)
+        reward_tag.ability.vegasstuff_solar_completion = true
+        add_tag(reward_tag)
         delay(0.6)
     end
 end
@@ -253,6 +255,9 @@ SMODS.Back({
     discovered = true,
     no_collection = false,
     atlas = "GeomancyCards",
+    loc_vars = function(self, info_queue, back)
+        info_queue[#info_queue + 1] = { key = "tag_vegasstuff_astro_solar", set = "Tag" }
+    end,
     draw = function(self, card, layer)
         if solar_is_displayed_back(card) and card.children and card.children.center then
             solar_draw_rings(card.children.center, card)
@@ -273,10 +278,50 @@ SMODS.Back({
 end
 
 SMODS.Back {
+    key = "astrologer",
+    atlas = "CustomDecks",
+    pos = { x = 0, y = 0 },
+    unlocked = true,
+    discovered = true,
+    config = { voucher = "v_vegasstuff_zodiac_merchant", zodiac_cards = 2 },
+
+    loc_vars = function(self, info_queue, back)
+        info_queue[#info_queue + 1] = G.P_CENTERS[self.config.voucher]
+        return { vars = { self.config.zodiac_cards } }
+    end,
+
+    apply = function(self, back)
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                for i = 1, self.config.zodiac_cards do
+                    SMODS.add_card { set = "zodiac", area = G.consumeables, key_append = "vegasstuff_astrologer" }
+                end
+                return true
+            end,
+        }))
+    end,
+}
+
+SMODS.Back {
     key = "reversed",
 
     atlas = "CustomDecks",
     pos = { x = 2, y = 0 },
+
+    loc_vars = function(self, info_queue, back)
+        info_queue[#info_queue + 1] = {
+            key = "vegasstuff_tarot_suit_equivalents",
+            set = "Other",
+            vars = {
+                colours = {
+                    G.C.SUITS["vegasstuff_Swords"],
+                    G.C.SUITS["vegasstuff_Cups"],
+                    G.C.SUITS["vegasstuff_Wands"],
+                    G.C.SUITS["vegasstuff_Pentacles"],
+                },
+            },
+        }
+    end,
 
     calculate = function(self, back, context)
         if context.after and context.scoring_hand then

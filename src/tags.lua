@@ -18,6 +18,9 @@ local function astro_choices_from_tag(tag)
     if blind_type == "Boss" then
         return ASTRO_CHOICES_BOSS
     end
+    if Vegasstuff.is_solar_deck() then
+        return 2
+    end
     return ASTRO_CHOICES_SMALL_BIG
 end
 
@@ -28,6 +31,11 @@ SMODS.Tag({
     discovered = true,
     weight = 10,
     config = { type = "new_blind_choice" },
+    loc_vars = function(self, info_queue, tag)
+        if Vegasstuff.is_solar_deck() then
+            return { key = "tag_vegasstuff_astro_solar" }
+        end
+    end,
     in_pool = function(self, args)
         return Vegasstuff and Vegasstuff.solar_sleeve_astro_tags_active and Vegasstuff.solar_sleeve_astro_tags_active()
     end,
@@ -48,6 +56,7 @@ SMODS.Tag({
 
         local choices = astro_choices_from_tag(tag)
         local key = choices >= ASTRO_CHOICES_BOSS and "p_vegasstuff_jumbo_geomancy_pack" or "p_vegasstuff_geomancy_pack"
+        if choices == 2 then key = "p_vegasstuff_mini_geomancy_pack" end
         local lock = tag.ID
         G.CONTROLLER.locks[lock] = true
 
@@ -63,6 +72,7 @@ SMODS.Tag({
             )
             card.cost = 0
             card.from_tag = true
+            card.ability.vegasstuff_no_jupiter = tag.ability.vegasstuff_solar_completion
             G.FUNCS.use_card({ config = { ref_table = card } })
             card:start_materialize()
             G.GAME.vegasstuff_solar_pending_choices = nil

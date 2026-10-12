@@ -1,6 +1,38 @@
 -- Enhancements
 
 SMODS.Enhancement {
+    key = "crystal",
+    atlas = "CustomEnhancements",
+    pos = { x = 0, y = 2 },
+    config = { extra = { chips = 10 } },
+
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = "vegasstuff_modified_card", set = "Other" }
+        return { vars = { card.ability.extra.chips } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.main_scoring and context.cardarea == G.play then
+            local modified = 0
+            for _, playing_card in ipairs(context.scoring_hand) do
+                if playing_card.config.center.set == "Enhanced" or playing_card.seal or playing_card.edition
+                    or playing_card.ability.eternal or playing_card.ability.perishable or playing_card.ability.rental then
+                    modified = modified + 1
+                else
+                    for _, sticker in ipairs(SMODS.Sticker.obj_buffer) do
+                        if playing_card.ability[sticker] then
+                            modified = modified + 1
+                            break
+                        end
+                    end
+                end
+            end
+            return { chips = card.ability.extra.chips * modified }
+        end
+    end,
+}
+
+SMODS.Enhancement {
     key = "miniscule",
     weight = 0,
     display_size = {
@@ -384,6 +416,7 @@ SMODS.Enhancement{
     key = "scoped",
     atlas = "CustomEnhancements",
     pos = {x = 0, y = 1},
+    soul_pos = {x = 6, y = 1},
 
     config = {
         extra = {
@@ -407,7 +440,7 @@ SMODS.Enhancement{
         return {
             vars = {
                 self.config.extra.xmult_mod,
-                edition_tally * self.config.extra.xmult_mod
+                1 + edition_tally * self.config.extra.xmult_mod
             }
         }
     end,
@@ -437,13 +470,12 @@ SMODS.Enhancement{
             end
         end
 
-        local total_xmult = edition_tally * self.config.extra.xmult_mod
-        if total_xmult <= 0 then
+        if edition_tally == 0 then
             return
         end
 
         return {
-            xmult = total_xmult
+            xmult = 1 + edition_tally * self.config.extra.xmult_mod
         }
     end
 }

@@ -1,37 +1,61 @@
 return {
     descriptions = {
         Back = {
+            b_vegasstuff_astrologer = {
+                name = "Astrologer's Deck",
+                text = {
+                    "Start with {C:attention,T:v_vegasstuff_zodiac_merchant}Zodiac Merchant{}",
+                    "and {C:attention}#1#{} {C:purple}Zodiac{} cards",
+                },
+            },
             b_vegasstuff_seized_deck = {
                 name = "Seized Deck",
                 text = {
                     "Start with an {C:attention}Eternal{}",
-                    "{C:attention}Vega{} Joker",
+                    "{C:attention,T:j_vegasstuff_vega}Vega{} Joker",
                 },
             },
-            b_vegasstuff_solar_deck = {
-                name = "Solar Deck",
+                b_vegasstuff_solar_deck = {
+                    name = "Solar Deck",
                 text = {
-                    "{C:attention}Blind rewards{} become {C:attention}Astro Tags{}",
-                    "Earn {C:money}$0{} and skip the {C:attention}Shop{}",
-                    "{C:attention}Astro Tags{} open free {C:vegasstuff_geomancy}Astro Packs{}",
+                    "Skip {C:attention}Small/Big Blinds{} for a {C:purple,T:p_vegasstuff_zodiac_pack}Zodiac Pack{}",
+                    "Defeat Blinds for an {C:attention,T:tag_vegasstuff_astro}Astro Tag{}",
+                    "No {C:money}cash rewards{} or {C:attention}Shops{}",
                 },
-            },
+                },
             b_vegasstuff_reversed = {
                 name = "Reversed Deck",
                 text = {
                     "Scored cards swap between",
-                    "their {C:attention}regular{} and {C:tarot}Tarot{} suits",
+                    "their {C:attention}regular{} and {C:tarot,T:vegasstuff_tarot_suit_equivalents}Tarot{} suits",
                 },
             },
             b_vegasstuff_minor_arcanist = {
                 name = "Minor Arcanist's Deck",
                 text = {
                     "Start with a full set of",
-                    "{V:1}Swords{}, {V:2}Cups{}, {V:3}Pentacles{} and {V:4}Wands{}",
+                    "{V:1}Swords{}, {V:2}Cups{},",
+                    "{V:3}Pentacles{} and {V:4}Wands{}",
                 },
             },
         },
         Blind = {
+            bl_vegasstuff_allure = {
+                name = "The Allure",
+                text = { "All Wands cards are debuffed" },
+            },
+            bl_vegasstuff_rust = {
+                name = "The Rust",
+                text = { "All Swords cards are debuffed" },
+            },
+            bl_vegasstuff_drought = {
+                name = "The Drought",
+                text = { "All Chalices cards are debuffed" },
+            },
+            bl_vegasstuff_greed = {
+                name = "The Greed",
+                text = { "All Pentacles cards are debuffed" },
+            },
             bl_vegasstuff_deja_vu_dream = {
                 name = "The Deja Vu Dream",
                 text = {
@@ -78,7 +102,7 @@ return {
                 text = {
                     "If a {C:clubs}Club{} is played,",
                     "increase Blind requirement",
-                    "by {C:attention}5%{} of base size",
+                    "by {C:attention}25%{} of base size",
                 },
             },
             bl_vegasstuff_wham_west = {
@@ -86,7 +110,7 @@ return {
                 text = {
                     "If a {C:spades}Spade{} is played,",
                     "increase Blind requirement",
-                    "by {C:attention}5%{} of base size",
+                    "by {C:attention}25%{} of base size",
                 },
             },
             bl_vegasstuff_sade_south = {
@@ -94,7 +118,7 @@ return {
                 text = {
                     "If a {C:diamonds}Diamond{} is played,",
                     "increase Blind requirement",
-                    "by {C:attention}5%{} of base size",
+                    "by {C:attention}25%{} of base size",
                 },
             },
             bl_vegasstuff_neon_north = {
@@ -102,7 +126,7 @@ return {
                 text = {
                     "If a {C:hearts}Heart{} is played,",
                     "increase Blind requirement",
-                    "by {C:attention}5%{} of base size",
+                    "by {C:attention}25%{} of base size",
                 },
             },
             bl_vegasstuff_test1 = {
@@ -113,6 +137,56 @@ return {
             },
         },
         Joker = {
+            j_vegasstuff_scrapyard = {
+                name = "Scrapyard",
+                text = {
+                    "Whenever a {C:attention}modified playing card{}",
+                    "is destroyed, transfer each modification",
+                    "to a random {C:attention}eligible card{} in hand",
+                    "{C:inactive}(Does not overwrite modifications){}",
+                },
+            },
+            j_vegasstuff_geode = {
+                name = "Geode Joker",
+                text = {
+                    "Balances {C:purple}#1#%{} of",
+                    "{C:chips}Chips{} and {C:mult}Mult{} for each",
+                    "{C:attention}modified card{} in your {C:attention}full deck{}",
+                },
+            },
+            j_vegasstuff_crystal_formation = {
+                name = "Crystal Formation",
+                text = {
+                    "{X:chips,C:white}X#1#{} Chips if scoring hand",
+                    "contains at least {C:attention}#2#{}",
+                    "{C:attention}modified cards{}",
+                },
+            },
+            j_vegasstuff_rock_candy = {
+                name = "Rock Candy",
+                text = {
+                    "Balances {C:purple}#1#%{} of {C:chips}Chips{} and {C:mult}Mult{}",
+                    "After {C:attention}#2#{} rounds, destroy this Joker",
+                    "and create a random {C:vegasstuff_geomancy}Geomancy{} card",
+                    "{C:inactive}(Must have room){}",
+                },
+            },
+            j_vegasstuff_crystal = {
+                name = "Crystal Joker",
+                text = {
+                    "When a {C:vegasstuff_geomancy}Geomancy{} card",
+                    "is used, add {C:money}$#1#{} of {C:attention}sell value{}",
+                    "to a random other {C:attention}Joker{}",
+                },
+            },
+            j_vegasstuff_horoscope = {
+                name = "Horoscope Joker",
+                text = {
+                    "Gains {C:chips}+#1#{} Chips whenever",
+                    "a {C:purple}Zodiac{} card is used",
+                    "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
+                },
+            },
             j_vegasstuff_theseized = {
                 name = "The Seized",
                 text = {
@@ -126,7 +200,8 @@ return {
                 name = "Vega",
                 text = {
                     "After every {C:attention}#2#{} {C:vegasstuff_geomancy}Geomancy{} cards used,",
-                    "gain {C:attention}+#3#{} {C:attention}selection limit{}",
+                    "gain {C:attention}+#3#{} {C:attention}hand size{}",
+                    "and {C:attention}selection limit{}",
                     "{C:inactive}[#1#/#2#]{}",
                 },
                 unlock = {
@@ -375,6 +450,13 @@ return {
 
         },
         Enhanced = {
+            m_vegasstuff_crystal = {
+                name = "Crystal Card",
+                text = {
+                    "Gives {C:chips}+#1#{} Chips for each",
+                    "{C:attention}modified card{} in scoring hand",
+                },
+            },
             m_vegasstuff_anaphase = {
                 name = "Anaphase",
                 text = {
@@ -433,7 +515,7 @@ return {
             m_vegasstuff_scoped = {
                 name = "Scoped",
                 text = {
-                    "{X:red,C:white}X#1#{} Mult per",
+                    "{X:red,C:white}+#1#X{} Mult per",
                     "{C:dark_edition}Editioned{} {C:attention}Joker{}",
                     "{C:inactive}(Currently {X:red,C:white}X#2#{}{C:inactive}){}",
                 },
@@ -572,7 +654,18 @@ return {
                     "{C:attention}Permanently{} gain",
                     "{C:attention}+#1#{} {C:attention}pack selection{}",
                     "and {C:attention}+#2#{} {C:attention}consumable{} slots",
+                    "After level {C:attention}5{}, grows {C:attention}pack size{} instead",
+                    "{C:inactive}(Excludes Astro Packs){}",
                     "{C:inactive}(Level #3#/#4#, Total +#5# selections, +#6# slots){}",
+                },
+            },
+            c_vegasstuff_jupiter_expanded = {
+                name = "{C:vegasstuff_name_jupiter}Jupiter{}",
+                text = {
+                    "{C:attention}Permanently{} add {C:attention}+#7#{} cards",
+                    "to {C:attention}Booster Packs{}",
+                       "{C:inactive}(Excludes Astro Packs){}",
+                    "{C:inactive}(Level #3#/#4#, Total +#8# pack size){}",
                 },
             },
             c_vegasstuff_luna = {
@@ -1142,37 +1235,45 @@ return {
             v_vegasstuff_geomancy_merchant = {
                 name = "Geomancy Merchant",
                 text = {
-                    "{C:vegasstuff_geomancy}Geomancy{} cards",
-                    "appear {C:attention}#1#X{}",
-                    "more often in the {C:attention}Shop{}",
+                    "{C:vegasstuff_geomancy}Geomancy{} cards appear",
+                    "{C:attention}#1#X{} more frequently",
+                    "in the shop",
                 },
             },
             v_vegasstuff_geomancy_tycoon = {
                 name = "Geomancy Tycoon",
                 text = {
-                    "{C:vegasstuff_geomancy}Geomancy{} cards",
-                    "appear {C:attention}#1#X{}",
-                    "more often in the {C:attention}Shop{}",
+                    "{C:vegasstuff_geomancy}Geomancy{} cards appear",
+                    "{C:attention}#1#X{} more frequently",
+                    "in the shop",
                 },
             },
             v_vegasstuff_zodiac_merchant = {
                 name = "Zodiac Merchant",
                 text = {
-                    "{C:purple}Zodiac{} cards",
-                    "appear {C:attention}#1#X{}",
-                    "more often in the {C:attention}Shop{}",
+                    "{C:purple}Zodiac{} cards appear",
+                    "{C:attention}#1#X{} more frequently",
+                    "in the shop",
                 },
             },
             v_vegasstuff_zodiac_tycoon = {
                 name = "Zodiac Tycoon",
                 text = {
-                    "{C:purple}Zodiac{} cards",
-                    "appear {C:attention}#1#X{}",
-                    "more often in the {C:attention}Shop{}",
+                    "{C:purple}Zodiac{} cards appear",
+                    "{C:attention}#1#X{} more frequently",
+                    "in the shop",
                 },
             },
         },
         Tag = {
+            tag_vegasstuff_astro_solar = {
+                name = "Astro Tag",
+                text = {
+                    "Open a free {C:vegasstuff_geomancy}Mini Astro Pack{}",
+                    "{C:attention}Boss/Champion Blinds{}",
+                    "open a {C:attention}Jumbo Pack{} instead",
+                },
+            },
             tag_vegasstuff_astro = {
                 name = "Astro Tag",
                 text = {
@@ -1197,6 +1298,14 @@ return {
             },
         },
         Other = {
+            vegasstuff_modified_card = {
+                name = "Modified Card",
+                text = {
+                    "A card with an {C:attention}Enhancement{},",
+                    "{C:attention}Seal{}, {C:dark_edition}Edition{}, or {C:attention}Sticker{}",
+                    --"Each card counts {C:attention}once{}",
+                },
+            },
             cry_rigged = {
                 name = "Rigged",
                 text = {
@@ -1454,7 +1563,12 @@ return {
         },
     },
     misc = {
+        v_dictionary = {
+            a_vegasstuff_balance = "#1#% Balanced",
+            a_vegasstuff_rounds_left = "#1# rounds left",
+        },
         dictionary = {
+            k_vegasstuff_recycled = "Recycled!",
             b_geomancy_cards = "Geomancy Cards",
             b_retrocode_cards = "Retro Code Cards",
             b_zodiac_cards = "Zodiac Cards",

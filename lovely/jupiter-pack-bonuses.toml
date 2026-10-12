@@ -1,0 +1,21 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 10
+
+# Apply the same Jupiter exclusion to actual pack generation and selection counts.
+[[patches]]
+[patches.regex]
+target = "card.lua"
+pattern = 'G\.GAME\.modifiers\.(?<modifier>booster_(?:size|choice)_mod) or 0'
+position = "at"
+payload = "Vegasstuff.booster_modifier('$modifier', self)"
+
+# The pack layout has its own size calculation separate from Card:open.
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/game_object.lua"]'
+pattern = 'local _size = math.max(1, SMODS.OPENED_BOOSTER.ability.extra + (G.GAME.modifiers.booster_size_mod or 0))'
+position = "at"
+match_indent = true
+payload = 'local _size = math.max(1, SMODS.OPENED_BOOSTER.ability.extra + Vegasstuff.booster_modifier("booster_size_mod", SMODS.OPENED_BOOSTER))'

@@ -261,7 +261,8 @@ SMODS.Joker {
                         if total_gain > 0 then
                             SMODS.change_play_limit(total_gain)
                             SMODS.change_discard_limit(total_gain)
-                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..tostring(total_gain).." Selection", colour = G.C.BLUE})
+                            G.hand:change_size(total_gain)
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..tostring(total_gain).." Hand Size & Selection", colour = G.C.BLUE})
                         end
                     else
                         extra.Geomancy_count = updated
@@ -876,6 +877,326 @@ SMODS.Joker {
             return {
                 mult = card.ability.extra.mult
             }
+        end
+    end,
+}
+
+-- Misc Jokers
+
+SMODS.Joker {
+    key = "scrapyard",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 3,
+    cost = 8,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    discovered = false,
+    pools = { ["vegasstuff_mycustom_jokers"] = true },
+
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = "vegasstuff_modified_card", set = "Other" }
+    end,
+
+    calculate = function(self, card, context)
+        if context.remove_playing_cards then
+            local removed = {}
+            local modifications = {}
+            for _, destroyed_card in ipairs(context.removed) do
+                removed[destroyed_card] = true
+                if destroyed_card.config.center.set == "Enhanced" then
+                    modifications[#modifications + 1] = { type = "enhancement", value = destroyed_card.config.center }
+                end
+                if destroyed_card.seal then
+                    modifications[#modifications + 1] = { type = "seal", value = destroyed_card.seal }
+                end
+                if destroyed_card.edition then
+                    modifications[#modifications + 1] = { type = "edition", value = copy_table(destroyed_card.edition) }
+                end
+                for _, sticker in ipairs(SMODS.Sticker.obj_buffer) do
+                    if destroyed_card.ability[sticker] then
+                        modifications[#modifications + 1] = {
+                            type = "sticker", key = sticker,
+                            value = type(destroyed_card.ability[sticker]) == "table"
+                                and copy_table(destroyed_card.ability[sticker]) or destroyed_card.ability[sticker],
+                            perish_tally = destroyed_card.ability.perish_tally,
+                        }
+                    end
+                end
+            end
+
+            if #modifications == 0 then return end
+
+            local message_card = context.blueprint_card or card
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            local transferred = false
+                            for _, modification in ipairs(modifications) do
+                                local candidates = {}
+                                for _, hand_card in ipairs(G.hand.cards) do
+                                    if not removed[hand_card] then
+                                        if (modification.type == "enhancement" and hand_card.config.center.set ~= "Enhanced")
+                                            or (modification.type == "seal" and not hand_card.seal)
+                                            or (modification.type == "edition" and not hand_card.edition)
+                                            or (modification.type == "sticker" and not hand_card.ability[modification.key]
+                                                and SMODS.Stickers[modification.key]:should_apply(hand_card, hand_card.config.center, G.hand, true)) then
+                                            candidates[#candidates + 1] = hand_card
+                                        end
+                                    end
+                                end
+
+                                if #candidates > 0 then
+                                    local target = pseudorandom_element(candidates, pseudoseed("vegasstuff_scrapyard_" .. (modification.key or modification.type)))
+                                    if modification.type == "enhancement" then
+                                        target:set_ability(modification.value)
+                                    elseif modification.type == "seal" then
+                                        target:set_seal(modification.value, true)
+                                    elseif modification.type == "edition" then
+                                        target:set_edition(copy_table(modification.value), true, true)
+                                    else
+                                        SMODS.Stickers[modification.key]:apply(target,
+                                            type(modification.value) == "table" and copy_table(modification.value) or modification.value)
+                                        if modification.key == "perishable" then
+                                            target.ability.perish_tally = modification.perish_tally
+                                        end
+                                    end
+                                    target:juice_up()
+                                    transferred = true
+                                end
+                            end
+                            if transferred then
+                                SMODS.calculate_effect({ message = localize("k_vegasstuff_recycled"), colour = G.C.GREEN }, message_card)
+                            end
+                            return true
+                        end,
+                    }))
+                    return true
+                end,
+            }))
+            return nil, true
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "geode",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 3,
+    cost = 8,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    discovered = false,
+    pools = { ["vegasstuff_mycustom_jokers"] = true },
+    config = { extra = { balance = 1 } },
+
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = "vegasstuff_modified_card", set = "Other" }
+        return { vars = { card.ability.extra.balance } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local modified = 0
+            for _, playing_card in ipairs(G.playing_cards) do
+                if playing_card.config.center.set == "Enhanced" or playing_card.seal or playing_card.edition
+                    or playing_card.ability.eternal or playing_card.ability.perishable or playing_card.ability.rental then
+                    modified = modified + 1
+                else
+                    for _, sticker in ipairs(SMODS.Sticker.obj_buffer) do
+                        if playing_card.ability[sticker] then
+                            modified = modified + 1
+                            break
+                        end
+                    end
+                end
+            end
+
+            if modified > 0 then
+                return { vegasstuff_balance_percent = modified * card.ability.extra.balance / 100 }
+            end
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "crystal_formation",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 2,
+    cost = 7,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    discovered = false,
+    pools = { ["vegasstuff_mycustom_jokers"] = true },
+    config = { extra = { xchips = 1.5, required = 3 } },
+
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = "vegasstuff_modified_card", set = "Other" }
+        return { vars = { card.ability.extra.xchips, card.ability.extra.required } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local modified = 0
+            for _, playing_card in ipairs(context.scoring_hand) do
+                if playing_card.config.center.set == "Enhanced" or playing_card.seal or playing_card.edition
+                    or playing_card.ability.eternal or playing_card.ability.perishable or playing_card.ability.rental then
+                    modified = modified + 1
+                else
+                    for _, sticker in ipairs(SMODS.Sticker.obj_buffer) do
+                        if playing_card.ability[sticker] then
+                            modified = modified + 1
+                            break
+                        end
+                    end
+                end
+            end
+
+            if modified >= card.ability.extra.required then
+                return { xchips = card.ability.extra.xchips }
+            end
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "rock_candy",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 2,
+    cost = 6,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    discovered = false,
+    pools = { ["vegasstuff_mycustom_jokers"] = true, ["vegasstuff_food"] = true },
+    config = { extra = { balance = 10, rounds = 3 } },
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.balance, card.ability.extra.rounds } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.joker_main then
+            return { vegasstuff_balance_percent = card.ability.extra.balance / 100 }
+        end
+
+        if context.end_of_round and context.game_over == false and context.main_eval
+            and not context.blueprint and not context.retrigger_joker then
+            card.ability.extra.rounds = card.ability.extra.rounds - 1
+            if card.ability.extra.rounds <= 0 then
+                if #G.consumeables.cards + (G.GAME.consumeable_buffer or 0) < G.consumeables.config.card_limit then
+                    G.GAME.consumeable_buffer = (G.GAME.consumeable_buffer or 0) + 1
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            SMODS.add_card { set = "geomancy", area = G.consumeables, key_append = "vegasstuff_rock_candy" }
+                            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
+                            return true
+                        end,
+                    }))
+                end
+                SMODS.destroy_cards(card, { pinch_anim = true })
+                return { message = localize("k_eaten_ex"), colour = G.C.PURPLE }
+            end
+
+            return {
+                message = localize { type = "variable", vars = { card.ability.extra.rounds } },
+                colour = G.C.FILTER,
+            }
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "crystal",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 2,
+    cost = 7,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    discovered = false,
+    pools = { ["vegasstuff_mycustom_jokers"] = true },
+    config = { extra = { sell_value = 2 } },
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.sell_value } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.using_consumeable
+            and context.consumeable.ability.set == "geomancy" then
+            local candidates = {}
+            for _, joker in ipairs(G.jokers.cards) do
+                if joker ~= card and joker ~= context.blueprint_card then
+                    candidates[#candidates + 1] = joker
+                end
+            end
+
+            if #candidates == 0 then
+                return
+            end
+
+            local target = pseudorandom_element(candidates, pseudoseed("vegasstuff_crystal"))
+            target.ability.extra_value = (target.ability.extra_value or 0)
+                + card.ability.extra.sell_value
+            target:set_cost()
+
+            return {
+                message = localize('k_val_up'),
+                message_card = target,
+                colour = G.C.MONEY,
+            }
+        end
+    end,
+}
+
+SMODS.Joker {
+    key = "horoscope",
+    atlas = "MiscJokers",
+    pos = { x = 0, y = 1 },
+    rarity = 1,
+    cost = 6,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    discovered = false,
+    pools = { ["vegasstuff_mycustom_jokers"] = true },
+    config = { extra = { chips = 0, chip_gain = 10 } },
+
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.chip_gain, card.ability.extra.chips } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.using_consumeable and not context.blueprint
+            and context.consumeable.ability.set == "zodiac" then
+            if SMODS.scale_card then
+                SMODS.scale_card(card, {
+                    ref_table = card.ability.extra,
+                    ref_value = "chips",
+                    scalar_value = "chip_gain",
+                    no_message = true,
+                })
+            else
+                card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_gain
+            end
+
+            return {
+                message = localize("k_upgrade_ex"),
+                colour = G.C.CHIPS,
+            }
+        end
+
+        if context.joker_main then
+            return { chips = card.ability.extra.chips }
         end
     end,
 }

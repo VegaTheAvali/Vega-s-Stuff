@@ -1,5 +1,73 @@
 -- Boss Blinds
 
+SMODS.Blind {
+    key = "allure",
+    atlas = "BossBlinds",
+    pos = { x = 0, y = 8 },
+    boss = { min = 1 },
+    mult = 2,
+    dollars = 5,
+    boss_colour = HEX("91913F"),
+    debuff = { suit = "vegasstuff_Wands" },
+    in_pool = function(self)
+        for _, card in ipairs(G.playing_cards or {}) do
+            if card.base.suit == self.debuff.suit then return true end
+        end
+        return false
+    end,
+}
+
+SMODS.Blind {
+    key = "rust",
+    atlas = "BossBlinds",
+    pos = { x = 0, y = 9 },
+    boss = { min = 1 },
+    mult = 2,
+    dollars = 5,
+    boss_colour = HEX("A320B0"),
+    debuff = { suit = "vegasstuff_Swords" },
+    in_pool = function(self)
+        for _, card in ipairs(G.playing_cards or {}) do
+            if card.base.suit == self.debuff.suit then return true end
+        end
+        return false
+    end,
+}
+
+SMODS.Blind {
+    key = "drought",
+    atlas = "BossBlinds",
+    pos = { x = 0, y = 10 },
+    boss = { min = 1 },
+    mult = 2,
+    dollars = 5,
+    boss_colour = HEX("4181A9"),
+    debuff = { suit = "vegasstuff_Cups" },
+    in_pool = function(self)
+        for _, card in ipairs(G.playing_cards or {}) do
+            if card.base.suit == self.debuff.suit then return true end
+        end
+        return false
+    end,
+}
+
+SMODS.Blind {
+    key = "greed",
+    atlas = "BossBlinds",
+    pos = { x = 0, y = 11 },
+    boss = { min = 1 },
+    mult = 2,
+    dollars = 5,
+    boss_colour = HEX("D6824E"),
+    debuff = { suit = "vegasstuff_Pentacles" },
+    in_pool = function(self)
+        for _, card in ipairs(G.playing_cards or {}) do
+            if card.base.suit == self.debuff.suit then return true end
+        end
+        return false
+    end,
+}
+
 local THE_VANILLA_BLINDS = {
     "bl_hook",
     "bl_ox",
@@ -189,7 +257,7 @@ local function increase_blind_for_suit(suit)
 
     blind.chips =
         blind.chips
-        + blind.effect.vegasstuff_base_chips * 0.05 * count
+        + blind.effect.vegasstuff_base_chips * 0.25 * count
 
     blind.chip_text = number_format(blind.chips)
     blind.triggered = true
@@ -346,7 +414,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 4 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("425C64"),
@@ -369,7 +437,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 5 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("99E553"),
@@ -392,7 +460,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 6 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("D64C70"),
@@ -415,7 +483,7 @@ SMODS.Blind {
     atlas = "BossBlinds",
     pos = { x = 0, y = 7 },
 
-    boss = { min = 1 },
+    boss = { showdown = true },
     mult = 2,
     dollars = 5,
     boss_colour = HEX("48CF98"),

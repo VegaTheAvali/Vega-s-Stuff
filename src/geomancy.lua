@@ -871,16 +871,12 @@ SMODS.Consumable {
 end
 
 do
-local function max_level()
-    return 5
-end
-
 local function consumable_slots_for_level(target_level)
-    return Vegasstuff.safe_int(target_level or 0, 0)
+    return math.min(5, Vegasstuff.safe_int(target_level or 0, 0))
 end
 
 local function pack_selections_for_level(target_level)
-    return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(target_level or 0), 0)
+    return Vegasstuff.safe_int(Vegasstuff.scaled_geomancy_value(math.min(5, target_level or 0)), 0)
 end
 
 local function consumable_slot_gain(current_level, next_level)
@@ -914,7 +910,7 @@ SMODS.Consumable {
     key = "jupiter",
     config = {
         extra = {
-            max_level = max_level(),
+            max_level = 20,
             tracker_key = "jupiter",
             fallback_center_key = "c_vegasstuff_jupiter"
         }
@@ -938,13 +934,16 @@ SMODS.Consumable {
         local selection_gain = level >= geomancy_max_level(self.config.extra) and 0 or pack_selection_gain(level, next_level)
         local slot_gain = level >= geomancy_max_level(self.config.extra) and 0 or consumable_slot_gain(level, next_level)
         return {
+            key = level >= 5 and "c_vegasstuff_jupiter_expanded" or nil,
             vars = {
                 selection_gain,
                 slot_gain,
                 level,
                 geomancy_max_level(self.config.extra),
                 pack_selections_for_level(level),
-                consumable_slots_for_level(level)
+                consumable_slots_for_level(level),
+                level >= 5 and level < geomancy_max_level(self.config.extra) and Vegasstuff.scaled_geomancy_value(1) or 0,
+                Vegasstuff.scaled_geomancy_value(math.max(0, level - 5))
             }
         }
     end,
@@ -962,10 +961,25 @@ SMODS.Consumable {
         local next_level = current_level + 1
         local selection_gain = pack_selection_gain(current_level, next_level)
         local slot_gain = consumable_slot_gain(current_level, next_level)
+        G.GAME.modifiers = G.GAME.modifiers or {}
+        G.GAME.modifiers.vegasstuff_jupiter_booster_choice_mod =
+            (G.GAME.modifiers.vegasstuff_jupiter_booster_choice_mod or pack_selections_for_level(current_level)) + selection_gain
+        G.GAME.modifiers.vegasstuff_jupiter_booster_size_mod =
+            G.GAME.modifiers.vegasstuff_jupiter_booster_size_mod
+                or Vegasstuff.scaled_geomancy_value(math.max(0, current_level - 5))
         apply_pack_selection_gain(selection_gain)
         apply_consumable_slot_gain(slot_gain)
+        if current_level >= 5 then
+            G.GAME.modifiers = G.GAME.modifiers or {}
+            G.GAME.modifiers.booster_size_mod = (G.GAME.modifiers.booster_size_mod or 0) + Vegasstuff.scaled_geomancy_value(1)
+            G.GAME.modifiers.vegasstuff_jupiter_booster_size_mod =
+                G.GAME.modifiers.vegasstuff_jupiter_booster_size_mod + Vegasstuff.scaled_geomancy_value(1)
+        end
         Vegasstuff.set_geomancy_level_from_extra(extra, next_level)
-        Vegasstuff.juice_and_status(used_card, jupiter_status(selection_gain, slot_gain), (G.C.SECONDARY_SET and G.C.SECONDARY_SET.Tarot) or G.C.PURPLE)
+        Vegasstuff.juice_and_status(used_card,
+            current_level >= 5 and "+" .. tostring(Vegasstuff.scaled_geomancy_value(1)) .. " Pack Size"
+                or jupiter_status(selection_gain, slot_gain),
+            (G.C.SECONDARY_SET and G.C.SECONDARY_SET.Tarot) or G.C.PURPLE)
     end,
 }
 end

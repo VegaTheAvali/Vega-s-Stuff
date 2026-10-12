@@ -1,5 +1,5 @@
 local FORK_SOLAR_TAG = "tag_vegasstuff_astro"
-local FORK_SOLAR_SMALL_CHOICES = 3
+local FORK_SOLAR_SMALL_CHOICES = 2
 local FORK_SOLAR_BOSS_CHOICES = 5
 
 local function fork_active_state()

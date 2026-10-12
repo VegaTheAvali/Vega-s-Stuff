@@ -47,22 +47,22 @@ consumable_rate_voucher {
 }
 
 consumable_rate_voucher {
-    key = "geomancy_merchant",
-    order = 2,
-    pos = { x = 1, y = 0 },
-    rate_key = "geomancy_rate",
-    rate = 9.6 / 4,
-    display = 2,
-}
-
-consumable_rate_voucher {
     key = "zodiac_tycoon",
-    order = 3,
+    order = 2,
     pos = { x = 0, y = 1 },
     requires = { "v_vegasstuff_zodiac_merchant" },
     rate_key = "zodiac_rate",
     rate = 32 / 4,
     display = 4,
+}
+
+consumable_rate_voucher {
+    key = "geomancy_merchant",
+    order = 3,
+    pos = { x = 1, y = 0 },
+    rate_key = "geomancy_rate",
+    rate = 9.6 / 4,
+    display = 2,
 }
 
 consumable_rate_voucher {

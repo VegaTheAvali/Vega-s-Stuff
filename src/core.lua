@@ -5,6 +5,35 @@ lenient_bignum = lenient_bignum or function(a) return a end
 _G.VegasStuff = _G.VegasStuff or {}
 Vegasstuff = _G.VegasStuff
 
+-- Percentage balancing, thanks All In Jest!
+table.insert(SMODS.calculation_keys, "vegasstuff_balance_percent")
+if SMODS.other_calculation_keys then
+    table.insert(SMODS.other_calculation_keys, "vegasstuff_balance_percent")
+end
+
+do
+    local calculate_individual_effect_ref = SMODS.calculate_individual_effect
+    function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
+        if key == "vegasstuff_balance_percent" then
+            amount = math.min(1, math.max(0, amount))
+            local transfer = (mult - hand_chips) * amount / 2
+            SMODS.Scoring_Parameters.chips:modify(transfer)
+            SMODS.Scoring_Parameters.mult:modify(-transfer)
+
+            if not effect.remove_default_message then
+                card_eval_status_text(effect.message_card or scored_card, "extra", nil, percent, nil, {
+                    message = localize { type = "variable", key = "a_vegasstuff_balance", vars = { amount * 100 } },
+                    colour = G.C.PURPLE,
+                    sound = "gong",
+                })
+            end
+            return true
+        end
+
+        return calculate_individual_effect_ref(effect, scored_card, key, amount, from_edition)
+    end
+end
+
 local STANDARD_TO_TAROT = {
     Spades = "vegasstuff_Wands",
     Hearts = "vegasstuff_Swords",
@@ -51,7 +80,7 @@ local VEGASSTUFF_GEOMANCY_MAX_LEVELS = {
     mercurius = 9,
     saturnus = 4,
     uranus = 4,
-    jupiter = 5,
+    jupiter = 20,
     singularity = 10
 }
 
@@ -292,6 +321,23 @@ end
 
 function Vegasstuff.scaled_geomancy_value(value)
     return (tonumber(value) or 0) * Vegasstuff.geomancy_value_multiplier()
+end
+
+function Vegasstuff.booster_modifier(key, booster)
+    local modifiers = G and G.GAME and G.GAME.modifiers or {}
+    local amount = tonumber(modifiers[key]) or 0
+    local center = booster and ((booster.config and booster.config.center) or booster)
+    if center and center.group_key == "k_vegasstuff_astro_pack" then
+        -- Older saves have Jupiter's bonuses in the totals without separate tracking.
+        local jupiter_bonus = modifiers["vegasstuff_jupiter_" .. key]
+        if jupiter_bonus == nil then
+            jupiter_bonus = Vegasstuff.scaled_geomancy_value(
+                key == "booster_choice_mod" and math.min(5, Vegasstuff.get_geomancy_level("jupiter"))
+                    or math.max(0, Vegasstuff.get_geomancy_level("jupiter") - 5))
+        end
+        amount = amount - jupiter_bonus
+    end
+    return amount
 end
 
 function Vegasstuff.geomancy_can_use(center)

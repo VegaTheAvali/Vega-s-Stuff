@@ -6,27 +6,19 @@ local function numeric_value(value, fallback)
     return tonumber(value) or fallback
 end
 
-local function booster_size_mod()
-    return numeric_value(G and G.GAME and G.GAME.modifiers and G.GAME.modifiers.booster_size_mod, 0)
+local function effective_pack_extra(cfg, booster)
+    return math.max(1, Vegasstuff.safe_int(numeric_value(cfg and cfg.extra, 1) + Vegasstuff.booster_modifier("booster_size_mod", booster), 1))
 end
 
-local function booster_choice_mod()
-    return numeric_value(G and G.GAME and G.GAME.modifiers and G.GAME.modifiers.booster_choice_mod, 0)
-end
-
-local function effective_pack_extra(cfg)
-    return math.max(1, Vegasstuff.safe_int(numeric_value(cfg and cfg.extra, 1) + booster_size_mod(), 1))
-end
-
-local function effective_pack_choose(cfg)
-    local extra = effective_pack_extra(cfg)
-    local choose = Vegasstuff.safe_int(numeric_value(cfg and cfg.choose, 1) + booster_choice_mod(), 1)
+local function effective_pack_choose(cfg, booster)
+    local extra = effective_pack_extra(cfg, booster)
+    local choose = Vegasstuff.safe_int(numeric_value(cfg and cfg.choose, 1) + Vegasstuff.booster_modifier("booster_choice_mod", booster), 1)
     return math.min(choose, extra), extra
 end
 
 local function pack_loc_vars(self, info_queue, card)
     local cfg = (card and card.ability) or self.config
-    local choose, extra = effective_pack_choose(cfg)
+    local choose, extra = effective_pack_choose(cfg, card or self)
     return { vars = { choose, extra } }
 end
 
@@ -88,14 +80,15 @@ local function is_maxed_geomancy_center(center)
         and Vegasstuff.get_geomancy_level(tracker_key) >= Vegasstuff.get_geomancy_max_level(center)
 end
 
-local function geomancy_pack_choices(key_append)
+local function geomancy_pack_choices(key_append, exclude_jupiter)
     local choices = {}
     local pool = (G and G.P_CENTER_POOLS and G.P_CENTER_POOLS.geomancy) or {}
     local croptid_key = "c_vegasstuff_croptid"
 
     for _, center in ipairs(pool) do
         local tracker_key = geomancy_tracker_key(center)
-        if center and tracker_key and tracker_key ~= "croptid" then
+        if center and tracker_key and tracker_key ~= "croptid"
+            and not (exclude_jupiter and center.key == "c_vegasstuff_jupiter") then
             if solar_deck_active() and is_maxed_geomancy_center(center) and G.P_CENTERS and G.P_CENTERS[croptid_key] then
                 choices[#choices + 1] = {
                     key = croptid_key,
@@ -117,14 +110,34 @@ local function geomancy_pack_has_choices()
     return #geomancy_pack_choices("vegasstuff_geomancy_pack_probe") > 0
 end
 
-local function geomancy_pack_card(key_append)
-    local choices = geomancy_pack_choices(key_append)
+local function geomancy_pack_card(key_append, card, i)
+    local choices = geomancy_pack_choices(key_append, card and card.ability.vegasstuff_no_jupiter)
     if #choices == 0 then
+        if card and card.ability.vegasstuff_no_jupiter then
+            return keyed_pack_card("c_vegasstuff_croptid", "geomancy", key_append)
+        end
         return pack_card("geomancy", key_append)
+    end
+
+    if card then
+        if i == 1 or not card.ability.vegasstuff_geomancy_seen then
+            card.ability.vegasstuff_geomancy_seen = {}
+        end
+        for index = #choices, 1, -1 do
+            if card.ability.vegasstuff_geomancy_seen[choices[index].key] then
+                table.remove(choices, index)
+            end
+        end
+        -- Repeat only once every eligible result has been offered.
+        if #choices == 0 then
+            card.ability.vegasstuff_geomancy_seen = {}
+            choices = geomancy_pack_choices(key_append, card.ability.vegasstuff_no_jupiter)
+        end
     end
 
     local selected_index = pseudorandom("vegasstuff_geomancy_candidate_" .. key_append, 1, #choices)
     local choice = choices[selected_index]
+    if card then card.ability.vegasstuff_geomancy_seen[choice.key] = true end
     return keyed_pack_card(choice.key, "geomancy", choice.source)
 end
 
@@ -137,7 +150,7 @@ local function apply_geomancy_pack_choices()
     local cfg = (booster and booster.ability)
         or (booster and booster.config and booster.config.center and booster.config.center.config)
         or {}
-    local choose, extra = effective_pack_choose(cfg)
+    local choose, extra = effective_pack_choose(cfg, booster)
     G.GAME.pack_size = extra
     G.GAME.pack_choices = choose
 end
@@ -220,6 +233,7 @@ local function register_consumable_pack(args)
     SMODS.Booster {
         key = args.key,
         config = { extra = args.extra, choose = args.choose },
+        weight = args.weight,
         cost = args.cost,
         atlas = args.atlas,
         pos = args.pos,
@@ -229,9 +243,9 @@ local function register_consumable_pack(args)
         in_pool = consumable_pack_in_pool(args),
         loc_vars = pack_loc_vars,
         create_UIBox = args.set == "geomancy" and geomancy_pack_UIBox or nil,
-        create_card = function()
+        create_card = function(self, card, i)
             if args.set == "geomancy" then
-                return geomancy_pack_card("vegasstuff_" .. args.key)
+                return geomancy_pack_card("vegasstuff_" .. args.key, card, i)
             end
             return pack_card(args.set, "vegasstuff_" .. args.key)
         end,
@@ -246,6 +260,7 @@ local function register_pack_variants(common, variants)
             key = variant.key,
             extra = variant.extra,
             choose = variant.choose,
+            weight = variant.weight,
             cost = variant.cost,
             atlas = common.atlas,
             pos = variant.pos,
@@ -261,16 +276,16 @@ register_pack_variants({
     group_key = "k_vegasstuff_astro_pack",
     set = "geomancy"
 }, {
-    { key = "geomancy_pack", extra = 3, choose = 1, pos = { x = 0, y = 0 } },
-    { key = "geomancy_pack2", extra = 3, choose = 1, pos = { x = 1, y = 0 } },
-    { key = "geomancy_pack3", extra = 3, choose = 1, pos = { x = 2, y = 0 } },
-    { key = "geomancy_pack4", extra = 3, choose = 1, pos = { x = 0, y = 0 } },
-    { key = "jumbo_geomancy_pack", extra = 5, choose = 1, pos = { x = 0, y = 1 } },
-    { key = "jumbo_geomancy_pack2", extra = 5, choose = 1, pos = { x = 1, y = 1 } },
-    { key = "mega_geomancy_pack", extra = 5, choose = 2, pos = { x = 2, y = 1 } },
-    { key = "mega_geomancy_pack2", extra = 5, choose = 2, pos = { x = 3, y = 1 } },
-    { key = "mini_geomancy_pack", extra = 2, choose = 1, pos = { x = 0, y = 2 } },
-    { key = "mini_geomancy_pack2", extra = 2, choose = 1, pos = { x = 1, y = 2 } }
+    { key = "geomancy_pack", extra = 3, choose = 1, weight = 0.3, pos = { x = 0, y = 0 } },
+    { key = "geomancy_pack2", extra = 3, choose = 1, weight = 0.3, pos = { x = 1, y = 0 } },
+    { key = "geomancy_pack3", extra = 3, choose = 1, weight = 0.3, pos = { x = 2, y = 0 } },
+    { key = "geomancy_pack4", extra = 3, choose = 1, weight = 0.3, pos = { x = 0, y = 0 } },
+    { key = "jumbo_geomancy_pack", extra = 5, choose = 1, weight = 0.3, pos = { x = 0, y = 1 } },
+    { key = "jumbo_geomancy_pack2", extra = 5, choose = 1, weight = 0.3, pos = { x = 1, y = 1 } },
+    { key = "mega_geomancy_pack", extra = 5, choose = 2, weight = 0.075, pos = { x = 2, y = 1 } },
+    { key = "mega_geomancy_pack2", extra = 5, choose = 2, weight = 0.075, pos = { x = 3, y = 1 } },
+    { key = "mini_geomancy_pack", extra = 2, choose = 1, weight = 1, pos = { x = 0, y = 2 } },
+    { key = "mini_geomancy_pack2", extra = 2, choose = 1, weight = 1, pos = { x = 1, y = 2 } }
 })
 
 register_pack_variants({
