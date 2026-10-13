@@ -256,9 +256,6 @@ SMODS.Back({
     discovered = true,
     no_collection = false,
     atlas = "GeomancyCards",
-    loc_vars = function(self, info_queue, back)
-        info_queue[#info_queue + 1] = { key = "tag_vegasstuff_astro_solar", set = "Tag" }
-    end,
     draw = function(self, card, layer)
         if solar_is_displayed_back(card) and card.children and card.children.center then
             solar_draw_rings(card.children.center, card)
@@ -287,7 +284,6 @@ SMODS.Back {
     config = { voucher = "v_vegasstuff_zodiac_merchant", zodiac_cards = 2 },
 
     loc_vars = function(self, info_queue, back)
-        info_queue[#info_queue + 1] = G.P_CENTERS[self.config.voucher]
         return { vars = { self.config.zodiac_cards } }
     end,
 
@@ -308,21 +304,6 @@ SMODS.Back {
 
     atlas = "CustomDecks",
     pos = { x = 2, y = 0 },
-
-    loc_vars = function(self, info_queue, back)
-        info_queue[#info_queue + 1] = {
-            key = "vegasstuff_tarot_suit_equivalents",
-            set = "Other",
-            vars = {
-                colours = {
-                    G.C.SUITS["vegasstuff_Swords"],
-                    G.C.SUITS["vegasstuff_Cups"],
-                    G.C.SUITS["vegasstuff_Wands"],
-                    G.C.SUITS["vegasstuff_Pentacles"],
-                },
-            },
-        }
-    end,
 
     calculate = function(self, back, context)
         if context.after and context.scoring_hand then
