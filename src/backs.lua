@@ -19,6 +19,7 @@ SMODS.Back {
                     local new_joker = SMODS.add_card({ set = 'Joker', key = 'j_vegasstuff_vega' })
                     if new_joker then
                         new_joker:add_sticker('eternal', true)
+                        new_joker:set_edition('e_negative', true)
                     end
                     G.GAME.joker_buffer = 0
                 end
