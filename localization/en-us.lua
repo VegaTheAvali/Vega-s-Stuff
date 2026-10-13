@@ -12,7 +12,7 @@ return {
                 name = "Artificer's Deck",
                 text = {
                     "Start with an {C:attention}Eternal{}",
-                    "{C:edition}Negative} {C:attention,T:j_vegasstuff_vega}Vega{} Joker",
+                    "{C:edition}Negative{} {C:attention,T:j_vegasstuff_vega}Vega{} Joker",
                 },
             },
                 b_vegasstuff_solar_deck = {
