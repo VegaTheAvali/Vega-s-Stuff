@@ -9,10 +9,10 @@ return {
                 },
             },
             b_vegasstuff_seized_deck = {
-                name = "Seized Deck",
+                name = "Artificer's Deck",
                 text = {
                     "Start with an {C:attention}Eternal{}",
-                    "{C:attention,T:j_vegasstuff_vega}Vega{} Joker",
+                    "{C:edition}Negative} {C:attention,T:j_vegasstuff_vega}Vega{} Joker",
                 },
             },
                 b_vegasstuff_solar_deck = {
