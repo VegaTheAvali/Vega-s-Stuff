@@ -281,7 +281,7 @@ end
 SMODS.Back {
     key = "astrologer",
     atlas = "CustomDecks",
-    pos = { x = 0, y = 0 },
+    pos = { x = 3, y = 0 },
     unlocked = true,
     discovered = true,
     config = { voucher = "v_vegasstuff_zodiac_merchant", zodiac_cards = 2 },
