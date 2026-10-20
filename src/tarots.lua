@@ -12,6 +12,11 @@ SMODS.Consumable {
     },
 
     loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = {
+            key = "vegasstuff_suit_" .. card.ability.suit_conv,
+            set = "Other",
+            vars = { "[rank]", G.GAME and G.GAME.vegasstuff_chalice or 0, 45, "[rank]", 15 },
+        }
         return {
             vars = {
                 card.ability.max_highlighted,
@@ -39,6 +44,11 @@ SMODS.Consumable {
     },
 
     loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = {
+            key = "vegasstuff_suit_" .. card.ability.suit_conv,
+            set = "Other",
+            vars = { "[rank]", G.GAME and G.GAME.vegasstuff_chalice or 0, 45, "[rank]", 15 },
+        }
         return {
             vars = {
                 card.ability.max_highlighted,
@@ -66,6 +76,11 @@ SMODS.Consumable {
     },
 
     loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = {
+            key = "vegasstuff_suit_" .. card.ability.suit_conv,
+            set = "Other",
+            vars = { "[rank]", G.GAME and G.GAME.vegasstuff_chalice or 0, 45, "[rank]", 15 },
+        }
         return {
             vars = {
                 card.ability.max_highlighted,
@@ -93,6 +108,11 @@ SMODS.Consumable {
     },
 
     loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = {
+            key = "vegasstuff_suit_" .. card.ability.suit_conv,
+            set = "Other",
+            vars = { "[rank]", G.GAME and G.GAME.vegasstuff_chalice or 0, 45, "[rank]", 15 },
+        }
         return {
             vars = {
                 card.ability.max_highlighted,

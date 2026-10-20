@@ -1298,6 +1298,38 @@ return {
             },
         },
         Other = {
+            vegasstuff_suit_vegasstuff_Cups = {
+                name = "Chalices",
+                text = {
+                    "When scored, add {C:attention}#1#{} to",
+                    "the shared {C:attention}Chalice{}",
+                    "Every {C:attention}#3#{} points, create a random",
+                    "{C:tarot}Tarot{} or {C:purple}Zodiac{} card",
+                    "{C:inactive}(Chalice: #2#/#3#; must have room){}",
+                },
+            },
+            vegasstuff_suit_vegasstuff_Pentacles = {
+                name = "Pentacles",
+                text = {
+                    "{C:attention}#4# in #5#{} chance to",
+                    "earn {C:money}$1{} when scored",
+                },
+            },
+            vegasstuff_suit_vegasstuff_Swords = {
+                name = "Swords",
+                text = {
+                    "When scored, {C:attention}retrigger{} the",
+                    "card immediately to the {C:attention}right{}",
+                    "if it has a {C:attention}lower rank{}",
+                },
+            },
+            vegasstuff_suit_vegasstuff_Wands = {
+                name = "Wands",
+                text = {
+                    "When scored, {C:attention}adjacent cards{}",
+                    "permanently gain {C:chips}+#1#{} Chips",
+                },
+            },
             vegasstuff_modified_card = {
                 name = "Modified Card",
                 text = {
@@ -1564,6 +1596,7 @@ return {
     },
     misc = {
         v_dictionary = {
+            a_vegasstuff_chalice = "#1#/#2# Chalice",
             a_vegasstuff_balance = "#1#% Balanced",
             a_vegasstuff_rounds_left = "#1# rounds left",
         },
