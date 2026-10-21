@@ -461,6 +461,9 @@ local function vegasstuff_register_loc_colours()
     for key, colour in pairs(Vegasstuff.consumable_name_colours) do
         G.ARGS.LOC_COLOURS[key] = colour
     end
+    for key, colour in pairs((G.C and G.C.SUITS) or {}) do
+        G.ARGS.LOC_COLOURS[key] = colour
+    end
 end
 
 if type(loc_colour) == "function" and not _G.vegasstuff_loc_colour_hooked then

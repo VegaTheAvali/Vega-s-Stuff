@@ -1540,10 +1540,10 @@ return {
                 vegasstuff_tarot_suit_equivalents = {
                 name = "Tarot Suit Equivalents",
                 text = {
-                    "{V:1}Swords{} = {C:hearts}Hearts{}",
-                    "{V:2}Cups{} = {C:clubs}Clubs{}",
-                    "{V:3}Wands{} = {C:spades}Spades{}",
-                    "{V:4}Pentacles{} = {C:diamonds}Diamonds{}",
+                    "{C:vegasstuff_Swords}Swords{} = {C:hearts}Hearts{}",
+                    "{C:vegasstuff_Cups}Cups{} = {C:clubs}Clubs{}",
+                    "{C:vegasstuff_Wands}Wands{} = {C:spades}Spades{}",
+                    "{C:vegasstuff_Pentacles}Pentacles{} = {C:diamonds}Diamonds{}",
                 },
             },
              vegasstuff_retro_seed = {
