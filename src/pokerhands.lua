@@ -37,22 +37,6 @@ SMODS.PokerHand {
     end
 }
 
-SMODS.Consumable {
-	set = "Planet",
-	key = "postage_temp",
-	config = { hand_type = "vegasstuff_postage", softlock = true },
-	pos = { x = 0, y = 0 },
-	atlas = "PlaceholderPlanet",
-
-	process_loc_text = function(self)
-    G.localization.descriptions[self.set][self.key] = {
-      text = G.localization.descriptions[self.set].c_mercury.text
-    }
-	end,
-
-	generate_ui = 0
-}
-
 
 -- Package, 5 cards with a seal
 
@@ -90,24 +74,6 @@ SMODS.PokerHand {
     end
 }
 
-
-SMODS.Consumable {
-	set = "Planet",
-	key = "package_temp",
-	config = { hand_type = "vegasstuff_package", softlock = true },
-	pos = { x = 0, y = 0 },
-	atlas = "PlaceholderPlanet",
-
-	process_loc_text = function(self)
-    G.localization.descriptions[self.set][self.key] = {
-      text = G.localization.descriptions[self.set].c_mercury.text
-    }
-	end,
-
-	generate_ui = 0
-}
-
-
 -- Mint, 5 cards with an edition. 
 
 SMODS.PokerHand {
@@ -144,23 +110,6 @@ SMODS.PokerHand {
     end
 }
 
-SMODS.Consumable {
-	set = "Planet",
-	key = "mint_temp",
-	config = { hand_type = "vegasstuff_mint", softlock = true },
-	pos = { x = 0, y = 0 },
-	atlas = "PlaceholderPlanet",
-
-	process_loc_text = function(self)
-    G.localization.descriptions[self.set][self.key] = {
-      text = G.localization.descriptions[self.set].c_mercury.text
-    }
-	end,
-
-	generate_ui = 0
-}
-
-
 -- Spell, 5 enhanced cards
 
 SMODS.PokerHand {
@@ -195,22 +144,6 @@ SMODS.PokerHand {
 
         return {}
     end
-}
-
-SMODS.Consumable {
-	set = "Planet",
-	key = "spelltemp",
-	config = { hand_type = "vegasstuff_spell", softlock = true },
-	pos = { x = 0, y = 0 },
-	atlas = "PlaceholderPlanet",
-
-	process_loc_text = function(self)
-    G.localization.descriptions[self.set][self.key] = {
-      text = G.localization.descriptions[self.set].c_mercury.text
-    }
-	end,
-
-	generate_ui = 0
 }
 
 -- Cauldron at least 4 modified cards
@@ -280,20 +213,4 @@ SMODS.PokerHand {
 
         return {}
     end
-}
-
-SMODS.Consumable {
-	set = "Planet",
-	key = "cauldron_temp",
-	config = { hand_type = "vegasstuff_cauldron", softlock = true },
-	pos = { x = 0, y = 0 },
-	atlas = "PlaceholderPlanet",
-
-	process_loc_text = function(self)
-    G.localization.descriptions[self.set][self.key] = {
-      text = G.localization.descriptions[self.set].c_mercury.text
-    }
-	end,
-
-	generate_ui = 0
 }
