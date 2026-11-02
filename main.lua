@@ -28,4 +28,4 @@ assert(SMODS.load_file("src/pokerhands.lua"))()
 assert(SMODS.load_file("src/tarots.lua"))()
 assert(SMODS.load_file("src/blinds.lua"))()
 assert(SMODS.load_file("src/stickers.lua"))()
-
+assert(SMODS.load_file("src/planets.lua"))()
