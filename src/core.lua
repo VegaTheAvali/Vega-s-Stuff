@@ -11,6 +11,44 @@ if SMODS.other_calculation_keys then
     table.insert(SMODS.other_calculation_keys, "vegasstuff_balance_percent")
 end
 
+local main_menu_ref = Game.main_menu
+
+function Game:main_menu(...)
+    local providers = {}
+    for _, mod in pairs(SMODS.Mods) do
+        if mod ~= Vegasstuff.mod and mod.menu_cards then
+            providers[mod] = mod.menu_cards
+            mod.menu_cards = nil
+        end
+    end
+
+local success, result = pcall(main_menu_ref, self, ...)
+
+    for mod, provider in pairs(providers) do
+        mod.menu_cards = provider
+    end
+
+    if not success then error(result, 0) end
+
+    if G.SPLASH_BACK and G.SPLASH_BACK.draw_steps then
+        for _, step in ipairs(G.SPLASH_BACK.draw_steps) do
+            if step.shader == "splash" then
+                for _, uniform in ipairs(step.send) do
+                    if uniform.name == "colour_1" then
+                        uniform.val = HEX("12710a")
+                        uniform.ref_table, uniform.ref_value = nil, nil
+                    elseif uniform.name == "colour_2" then
+                        uniform.val = HEX("d0cc05")
+                        uniform.ref_table, uniform.ref_value = nil, nil
+                    end
+                end
+            end
+        end
+    end
+
+    return result
+end
+
 do
     local calculate_individual_effect_ref = SMODS.calculate_individual_effect
     function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
@@ -475,3 +513,8 @@ if type(loc_colour) == "function" and not _G.vegasstuff_loc_colour_hooked then
         return (G and G.ARGS and G.ARGS.LOC_COLOURS and G.ARGS.LOC_COLOURS[colour_key]) or colour
     end
 end
+
+
+
+
+
